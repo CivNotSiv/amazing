@@ -1,0 +1,5 @@
+.venv
+!*.py
+!config.txt
+!README.md
+!Makefile
