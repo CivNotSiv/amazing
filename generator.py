@@ -3,8 +3,8 @@ import random as rand
 
 
 ARGS: dict[str, Any] = {
-        "WIDTH": 20,
-        "HEIGHT": 20,
+        "WIDTH": 10,
+        "HEIGHT": 10,
         # "ENTERY": "0,0,
         # "EXIT": 9, 4,
         # "OUTPUT_FILE": maze.txt,
@@ -13,7 +13,7 @@ ARGS: dict[str, Any] = {
 
 
 STAMP: list[list[int]] = [
-    [1,0,1,0,1,1,1],
+    [1,0,0,0,1,1,1],
     [1,0,1,0,0,0,1],
     [1,1,1,0,1,1,1],
     [0,0,1,0,1,0,0],
@@ -29,6 +29,7 @@ STAMP: list[list[int]] = [
 # ]
 
 
+
 def init_grid(x: int, y: int) -> list[list[int]]:
     """
     generates a x by y grid then zeros it, then it itterates
@@ -41,14 +42,14 @@ def init_grid(x: int, y: int) -> list[list[int]]:
     return grid
 
 
-def init_immutable(grid: list[list[int]]) -> list[tuple[int]]:
+def init_immutable(grid: list[list[int]]) -> list[tuple[int, int]]:
     """
     generates a list of tuples where the maze generator should
     not touch
     """
     origin: tuple[int, int] = round(len(grid[0]) / 2), round(len(grid) / 2)
     offset: tuple[int, int] = round(len(STAMP[0]) / 2), round(len(STAMP) / 2)
-    immutable_grid = []
+    immutable_grid: list[tuple[int, int]] = []
     s_line = 0
     if len(grid) < 9 or len(grid[0]) < 9:
         return immutable_grid
@@ -60,7 +61,7 @@ def init_immutable(grid: list[list[int]]) -> list[tuple[int]]:
                 continue
             for s_pos in range(len(STAMP[s_line])):
                 if STAMP[s_line][s_pos] == 1:
-                    immutable_grid.append(tuple((g_line, i)))
+                    immutable_grid.append((g_line, i))
                 i += 1
             s_line += 1
             break
@@ -92,7 +93,7 @@ class tree_set:
 
 
 
-def kruskal_algo(grid: list[list[int]], immutable: list[tuple[int]], seed: int) -> list[list[int]]:
+def kruskal_algo(grid: list[list[int]], immutable: list[tuple[int, int]], seed: int) -> list[list[int]]:
     """
     explanation.
     1st,    we take the list of immutables and overlay them on the grid
@@ -124,13 +125,12 @@ def kruskal_algo(grid: list[list[int]], immutable: list[tuple[int]], seed: int) 
     6rd,    anyway that continues until the desird connections are reached
             then it just returns the grid
     """
-    hidden_set_grid: list[list[int]] = [row[:] for row in grid]
-    grid_size: tuple = tuple((len(grid), len(grid[0])))
+    hidden_set_grid: list[list[tree_set]] = [[tree_set(0) for _ in row] for row in grid]
+    grid_size: tuple[int, int] = (len(grid), len(grid[0]))
     identiy = 1
     for line in range(len(hidden_set_grid)):
         for cell in range(len(hidden_set_grid[line])):
             if any(t == tuple((line,cell)) for t in immutable):
-                hidden_set_grid[line][cell] = tree_set(0)
                 continue
             hidden_set_grid[line][cell] = tree_set(identiy)
             identiy += 1
