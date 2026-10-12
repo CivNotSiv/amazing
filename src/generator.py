@@ -1,5 +1,5 @@
 import random as rand
-from algorithms import kruskal_algo, tree_set
+from .algorithms import kruskal_algo, tree_set
 from enum import Enum
 
 

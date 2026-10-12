@@ -1,4 +1,5 @@
-import a_maze_ing
+from ..generator import generate
 
-def dfs_solver(maze: object) -> object:
-    
+
+def dfs_solver(maze: generate) -> list[list[int]]:
+    print(maze.size)

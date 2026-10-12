@@ -16,7 +16,7 @@ class MazeConfig(BaseModel):
     exit_pos: tuple[int, int] = Field(alias="EXIT")
     output_file: str = Field(alias="OUTPUT_FILE", min_length=4)
     perfect: bool = Field(alias="PERFECT")
-    seed: int | None = Field(default=None, alias="SEED")
+    seed: int = Field(default=42, alias="SEED")
     gen_algo: str | None = Field(default=None, alias="GENERATOR")
     solve_algo: str | None = Field(default=None, alias="SOLVER")
 
@@ -118,12 +118,3 @@ def parse_config(file_name: str) -> MazeConfig:
         return MazeConfig.model_validate(pairs)
     except ValidationError as e:
         raise ConfigError(_format_errors(e)) from None
-
-
-if __name__ == "__main__":
-    try:
-        maze_config = parse_config("config.txt")
-    except ConfigError as e:
-        print(e)
-        exit()
-    print(maze_config)
