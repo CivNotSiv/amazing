@@ -59,14 +59,14 @@ class UserInterface(App[None]):
     """
 
     def __init__(self, maze: generate, width: int, height: int,
-                 seed: int, perfect: bool, output: str) -> None:
+                 seed: int, perfect: bool, style: list[generate.Style] | None) -> None:
         super().__init__()
         self.maze = maze
         self.width = width
         self.height = height
         self.seed = seed
         self.perfect = perfect
-        self.output = output
+        self.current_style = style
 
     def update_maze(self) -> None:
         if self.check_maze_fits(self.maze):
@@ -126,13 +126,13 @@ class UserInterface(App[None]):
             self.seed = int(self.query_one("#seed", Input).value)
 
             self.maze = generate((self.width, self.height),
-                                 self.seed, self.perfect)
+                                 self.seed, self.perfect, self.current_style)
             self.maze.kruskal()
             self.update_maze()
 
         elif event.button.id == "reset":
             self.maze = generate((self.width, self.height),
-                                 self.seed, self.perfect)
+                                 self.seed, self.perfect, self.current_style)
             self.update_maze()
 
         if event.button.id == "step":
@@ -155,7 +155,8 @@ class UserInterface(App[None]):
             self.query_one("#perfect", Button).label = f"{str(self.perfect)}"
 
         elif event.button.id == "style":
-            self.maze.styler.next_style()
+            self.maze.next_style()
+            self.current_style = self.maze.selected
             self.query_one("#style", Button).label = self.maze.selected.name
             self.update_maze()
 
@@ -182,6 +183,6 @@ class UserInterface(App[None]):
 
 
 if __name__ == "__main__":
-    maze = generate((22, 11), 42, True)
-    app = UserInterface(maze, 22, 11, 42, True, "")
+    maze = generate((22, 11), 42, True, None)
+    app = UserInterface(maze, 22, 11, 42, True, None)
     app.run()

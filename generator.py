@@ -96,7 +96,7 @@ def kruskal_algo(grid: list[list[int]],
 
 
 class generate():
-    def __init__(self, size: tuple[int, int], seed: int, perfect: bool):
+    def __init__(self, size: tuple[int, int], seed: int, perfect: bool, selected: list[str] | None):
         rand.seed(seed)
         self.size = size
         self.perfect = perfect
@@ -113,9 +113,10 @@ class generate():
         if size[0] >= 9 and size[1] >= 9:
             self.connections -= len(self.ignore)
 
-        # self.styler = self.Style(self)
-        self.styler = self.Style()
-        self.selected = self.styler.DEFAULT
+        if selected == None:
+            self.selected = self.Style.DEFAULT
+        else:
+            self.selected = selected
 
     def __init_grid__(self) -> None:
         """
@@ -171,18 +172,19 @@ class generate():
         return (self.grid)
 
     class Style(Enum):
-        DEFAULT = ["■", "■", "■", "■"]
-        THINISH = ["■", "║", "═", "╋"]
-        ROADIES = ["╬", "║", "═", "╬"]
-        SPIKEYS = ["┼", "│", "─", "┼"]
-        BALLSEY = ["𝚘", "│", "─", "𝚘"]
-        BREAILY = [" ", "⢸", "⠒", "⣿"]
-        THISWAY = ["↺", "⇵", "⇌", "↺"]
-        AMOUNGS = ["ඞ", "ඞ", "ඞ", "ඞ"]
+        DEFAULT = ("■", "■", "■", "■")
+        THINISH = ("■", "║", "═", "╋")
+        ROADIES = ("╬", "║", "═", "╬")
+        SPIKEYS = ("┼", "│", "─", "┼")
+        BALLSEY = ("𝚘", "│", "─", "𝚘")
+        BREAILY = (" ", "⢸", "⠒", "⣿")
+        THISWAY = ("↺", "⇵", "⇌", "↺")
+        AMOUNGS = ("ඞ", "ඞ", "ඞ", "ඞ")
 
-        def next_style(self) -> "style":
-            members = list(type(self))
-            self.selected = members[(members.index(self) + 1) % len(members)]
+    def next_style(self) -> "style":
+        members = list(self.Style)
+        current = members.index(self.selected)
+        self.selected = members[(current + 1) % len(members)]
 
     def draw_maze(self) -> str:
         """
