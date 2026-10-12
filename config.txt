@@ -1,0 +1,9 @@
+# This is the config file that will store all the config data for our program
+# These are essentially the settings that will determine how our program works!
+
+WIDTH=20
+HEIGHT=15
+ENTRY=0,0
+EXIT=19,14
+OUTPUT_FILE=maze.txt
+PERFECT=True
