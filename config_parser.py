@@ -4,7 +4,7 @@ from pydantic import (BaseModel, ConfigDict, Field, ValidationError,
 
 
 class ConfigError(Exception):
-    """Raised for any problem with the configuration file."""
+    """Raised if any problem occurs with the configuration file."""
     pass
 
 
