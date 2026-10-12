@@ -105,7 +105,7 @@ def _format_errors(exc: ValidationError) -> str:
         if err["type"] == "missing":
             msg = "mandatory key is missing"
         messages.append(f"{field}: {msg}" if field else msg)
-    return ("; ".join(messages))
+    return (";\n".join(messages))
 
 
 def parse_config(file_name: str) -> MazeConfig:
@@ -125,4 +125,5 @@ if __name__ == "__main__":
         maze_config = parse_config("config.txt")
     except ConfigError as e:
         print(e)
+        exit()
     print(maze_config)
