@@ -1,4 +1,6 @@
 import random as rand
+from enum import Enum
+
 
 
 STAMP: list[list[int]] = [
@@ -38,8 +40,7 @@ def kruskal_algo(grid: list[list[int]],
                  h_grid: list[list[tree_set]]) -> list[list[int]]:
     """
     explanation.
-    1rd,    for the amount of req connections we loop over the maze,
-            we check the elements surrounding the randomly selected cell
+    1rd,    we check the elements surrounding the randomly selected cell
             and if the element is a valid target wwe add it to the options
             list, then we randomly selsect from the options, if there
             are no options we start again.
@@ -112,6 +113,10 @@ class generate():
         if size[0] >= 9 and size[1] >= 9:
             self.connections -= len(self.ignore)
 
+        # self.styler = self.Style(self)
+        self.styler = self.Style()
+        self.selected = self.styler.DEFAULT
+
     def __init_grid__(self) -> None:
         """
         generates a x by y grid then zeros it, then it itterates
@@ -165,13 +170,28 @@ class generate():
             self.connections -= 1
         return (self.grid)
 
-    def draw_maze(self, c_set: list[str]) -> str:
+    class Style(Enum):
+        DEFAULT = ["■", "■", "■", "■"]
+        THINISH = ["■", "║", "═", "╋"]
+        ROADIES = ["╬", "║", "═", "╬"]
+        SPIKEYS = ["┼", "│", "─", "┼"]
+        BALLSEY = ["𝚘", "│", "─", "𝚘"]
+        BREAILY = [" ", "⢸", "⠒", "⣿"]
+        THISWAY = ["↺", "⇵", "⇌", "↺"]
+        AMOUNGS = ["ඞ", "ඞ", "ඞ", "ඞ"]
+
+        def next_style(self) -> "style":
+            members = list(type(self))
+            self.selected = members[(members.index(self) + 1) % len(members)]
+
+    def draw_maze(self) -> str:
         """
         this is miserable.
         """
-        cornor = c_set[0]
-        wall_v = c_set[1]
-        wall_h = c_set[2]
+        cornor = self.selected.value[0]
+        wall_v = self.selected.value[1]
+        wall_h = self.selected.value[2]
+        fortys = self.selected.value[3]
         line = []
         for y in range(len(self.grid)):
             for x in range(len(self.grid[y])):
@@ -187,7 +207,10 @@ class generate():
                     line.append(f"{wall_v}")
                 else:
                     line.append(" ")
-                line.append("   ")
+                if self.grid[y][x] == 15:
+                    line.append(f"{fortys}{fortys}{fortys}")
+                else:
+                    line.append("   ")
             if self.grid[y][-1] & 2:
                 line.append(f"{wall_v}\n")
             else:

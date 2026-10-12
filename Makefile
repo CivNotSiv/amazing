@@ -1,12 +1,9 @@
-PACKAGES = \
-
+run:
+	python3 tui.py
+# 	.venv/bin/python3 a_maze_ing.py config.txt
 
 install:
-	python3 -m venv .venv
-	. .venv/bin/activate && pip install $(PACKAGES)
-
-run:
-	.venv/bin/python3 a_maze_ing.py config.txt
+	pip install -r requirements.txt
 
 debug:
 	.venv/bin/python3 -m pdb a_maze_ing.py config.txt
@@ -18,3 +15,4 @@ clean:
 	rm -rf __pycache__
 	rm -rf mypy_cache
 	rm -rf .venv
+	rm -rf .mypy_cache

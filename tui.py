@@ -4,27 +4,13 @@ from textual.widgets import Static, Button, Input, Label
 from textual.containers import Container, Horizontal, Vertical
 from textual import events
 from typing import Any
-from enum import Enum
-
-
-class Styles(Enum):
-    DEFAULT = ["■", "■", "■"]
-    THINISH = ["■", "║", "═"]
-    ROADIES = ["╬", "║", "═"]
-    SPIKEYS = ["┼", "│", "─"]
-    BALLSEY = ["𝚘", "│", "─"]
-    BREAILY = [" ", "⢸", "⠒"]
-    THISWAY = ["↺", "⇵", "⇌"]
-    AMOUNGS = ["ඞ", "ඞ", "ඞ"]
-
-    def next_style(self) -> "Styles":
-        members = list(type(self))
-        return members[(members.index(self) + 1) % len(members)]
 
 
 class UserInterface(App[None]):
     CSS = """
         Screen {
+            min-width: 50;
+            min-height: 50;
             align: center middle;
             border: round cyan;
         }
@@ -34,6 +20,7 @@ class UserInterface(App[None]):
             height: 1fr;
             align: center middle;
             padding-top: 0;
+            border: round cyan;
         }
 
         #maze {
@@ -80,15 +67,14 @@ class UserInterface(App[None]):
         self.seed = seed
         self.perfect = perfect
         self.output = output
-        self.style = Styles.DEFAULT
 
     def update_maze(self) -> None:
         if self.check_maze_fits(self.maze):
             self.query_one("#maze", Static).update(
-                self.maze.draw_maze(self.style.value))
+                self.maze.draw_maze())
 
     def check_maze_fits(self, maze: generate) -> bool:
-        lines = str(maze.draw_maze(self.style.value)).splitlines()
+        lines = str(maze.draw_maze()).splitlines()
         avail_w, avail_h = self.query_one("#maze-container").content_size
         if len(lines[0]) > avail_w or len(lines) > avail_h:
             self.notify(f"Maze ({len(lines[0])}×{len(lines)}) won't fit "
@@ -101,7 +87,7 @@ class UserInterface(App[None]):
     def compose(self) -> ComposeResult:
         with Container(id="maze-container"):
             yield Static(
-                self.maze.draw_maze(self.style.value),
+                self.maze.draw_maze(),
                 id="maze",
                 markup=False,
             )
@@ -131,7 +117,7 @@ class UserInterface(App[None]):
                 yield Button(str(self.perfect), id="perfect")
 
                 yield Label("Wall style")
-                yield Button(str(self.style.name), id="style")
+                yield Button(str(self.maze.selected.name), id="style")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "generate":
@@ -152,10 +138,11 @@ class UserInterface(App[None]):
         if event.button.id == "step":
             self.maze.kruskal_play()
             self.query_one("#maze", Static).update(
-                            self.maze.draw_maze(self.style.value))
+                            self.maze.draw_maze())
 
         elif event.button.id == "solve":
-            pass
+            import sys
+            sys.exit(1)
 
         elif event.button.id == "quit":
             self.exit()
@@ -168,8 +155,8 @@ class UserInterface(App[None]):
             self.query_one("#perfect", Button).label = f"{str(self.perfect)}"
 
         elif event.button.id == "style":
-            self.style = self.style.next_style()
-            self.query_one("#style", Button).label = self.style.name
+            self.maze.styler.next_style()
+            self.query_one("#style", Button).label = self.maze.selected.name
             self.update_maze()
 
     class ScrollInput(Input):
