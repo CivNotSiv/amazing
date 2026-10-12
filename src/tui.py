@@ -59,7 +59,8 @@ class UserInterface(App[None]):
     """
 
     def __init__(self, maze: generate, width: int, height: int,
-                 seed: int, perfect: bool, style: list[generate.Style] | None) -> None:
+                 seed: int, perfect: bool,
+                 style: list[generate.Style] | None) -> None:
         super().__init__()
         self.maze = maze
         self.width = width

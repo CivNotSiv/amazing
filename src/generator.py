@@ -12,11 +12,9 @@ STAMP: list[list[int]] = [
 ]
 
 
-
-
-
 class generate():
-    def __init__(self, size: tuple[int, int], seed: int, perfect: bool, selected: list[str] | None):
+    def __init__(self, size: tuple[int, int], seed: int,
+                 perfect: bool, selected: list[str] | None):
         rand.seed(seed)
         self.size = size
         self.perfect = perfect
@@ -33,7 +31,7 @@ class generate():
         if size[0] >= 9 and size[1] >= 9:
             self.connections -= len(self.ignore)
 
-        if selected == None:
+        if selected is None:
             self.selected = self.Style.DEFAULT
         else:
             self.selected = selected
@@ -101,7 +99,7 @@ class generate():
         THISWAY = ("↺", "⇵", "⇌", "↺")
         AMOUNGS = ("ඞ", "ඞ", "ඞ", "ඞ")
 
-    def next_style(self) -> "style":
+    def next_style(self) -> "Style":
         members = list(self.Style)
         current = members.index(self.selected)
         self.selected = members[(current + 1) % len(members)]
