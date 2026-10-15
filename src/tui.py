@@ -1,4 +1,4 @@
-from generator import generate
+from .generator import generate
 from textual.app import App, ComposeResult
 from textual.widgets import Static, Button, Input, Label
 from textual.containers import Container, Horizontal, Vertical
@@ -20,7 +20,7 @@ class UserInterface(App[None]):
             height: 1fr;
             align: center middle;
             padding-top: 0;
-            border: round cyan;
+            # border: round cyan;
         }
 
         #maze {
@@ -68,6 +68,7 @@ class UserInterface(App[None]):
         self.seed = seed
         self.perfect = perfect
         self.current_style = style
+
 
     def update_maze(self) -> None:
         if self.check_maze_fits(self.maze):

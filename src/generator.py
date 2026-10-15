@@ -91,6 +91,7 @@ class generate():
 
     class Style(Enum):
         DEFAULT = ("■", "■", "■", "■")
+        BLOCKYS = ("■", "■", "■", "■")
         THINISH = ("■", "║", "═", "╋")
         ROADIES = ("╬", "║", "═", "╬")
         SPIKEYS = ("┼", "│", "─", "┼")
