@@ -1,5 +1,5 @@
 import random as rand
-from .algorithms import kruskal_algo, tree_set
+from .algorithms import kruskal_algo, tree_set, bfs
 from enum import Enum
 
 
@@ -13,8 +13,19 @@ STAMP: list[list[int]] = [
 
 
 class generate():
+
+    class Style(Enum):
+        DEFAULT = ("■", "■", "■", "■", "x")
+        THINISH = ("■", "║", "═", "╋", "-")
+        SPIKEYS = ("┼", "│", "─", "┼", "■")
+        BALLSEY = ("𝚘", "│", "─", "𝚘", "♦")
+        BREAILY = (" ", "⢸", "⠒", "⣿", "■")
+        THISWAY = ("↺", "⇵", "⇌", "↺", "☹")
+        AMOUNGS = ("ඞ", "ඞ", "ඞ", "ඞ", "⚠")
+
     def __init__(self, size: tuple[int, int], seed: int,
-                 perfect: bool, selected: list[str] | None):
+                 perfect: bool, selected: Style | None,
+                 solved: list[tuple[int, int]]):
         rand.seed(seed)
         self.size = size
         self.perfect = perfect
@@ -26,6 +37,7 @@ class generate():
         self.__init_grid__()
         self.__init_immutable__(STAMP)
         self.__init_hidden__()
+        self.solved: list[tuple[int, int]] = solved
 
         self.connections = size[0] * size[1] - 1
         if size[0] >= 9 and size[1] >= 9:
@@ -89,18 +101,10 @@ class generate():
             self.connections -= 1
         return (self.grid)
 
-    class Style(Enum):
-        DEFAULT = ("■", "■", "■", "■")
-        BLOCKYS = ("■", "■", "■", "■")
-        THINISH = ("■", "║", "═", "╋")
-        ROADIES = ("╬", "║", "═", "╬")
-        SPIKEYS = ("┼", "│", "─", "┼")
-        BALLSEY = ("𝚘", "│", "─", "𝚘")
-        BREAILY = (" ", "⢸", "⠒", "⣿")
-        THISWAY = ("↺", "⇵", "⇌", "↺")
-        AMOUNGS = ("ඞ", "ඞ", "ඞ", "ඞ")
+    def solve(self, start_exit) -> None:
+        self.solved = bfs(self.grid, start_exit)
 
-    def next_style(self) -> "Style":
+    def next_style(self) -> None:
         members = list(self.Style)
         current = members.index(self.selected)
         self.selected = members[(current + 1) % len(members)]
@@ -113,6 +117,7 @@ class generate():
         wall_v = self.selected.value[1]
         wall_h = self.selected.value[2]
         fortys = self.selected.value[3]
+        path = self.selected.value[4]
         line = []
         for y in range(len(self.grid)):
             for x in range(len(self.grid[y])):
@@ -130,6 +135,8 @@ class generate():
                     line.append(" ")
                 if self.grid[y][x] == 15:
                     line.append(f"{fortys}{fortys}{fortys}")
+                elif any(t == tuple((y, x)) for t in self.solved):
+                    line.append(f" {path} ")
                 else:
                     line.append("   ")
             if self.grid[y][-1] & 2:

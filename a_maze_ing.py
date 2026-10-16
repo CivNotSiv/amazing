@@ -1,8 +1,5 @@
 import sys
-from src.generator import generate
-from src.tui import UserInterface
-from src.algorithms.dfs_solver import dfs_solver
-from src.config_parser import parse_config, ConfigError
+from src import generate, UserInterface, parse_config, ConfigError
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -10,10 +7,10 @@ if __name__ == "__main__":
     try:
         config = parse_config(sys.argv[1])
     except ConfigError as e:
-        exit(e)
+        sys.exit(str(e))
     maze = generate((config.width, config.height), config.seed,
-                    config.perfect, None)
-    # maze = dfs_solver(maze)
-    app = UserInterface(maze, config.width, config.height,
-                        config.seed, config.perfect, None)
+                    config.perfect, None, list((config.entry, config.exit_pos)))
+    app = UserInterface(maze, (config.width, config.height),
+                        config.seed, config.perfect,
+                        list((config.entry, config.exit_pos)), None)
     app.run()
