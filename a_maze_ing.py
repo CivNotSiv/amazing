@@ -9,7 +9,8 @@ if __name__ == "__main__":
     except ConfigError as e:
         sys.exit(str(e))
     maze = generate((config.width, config.height), config.seed,
-                    config.perfect, None, list((config.entry, config.exit_pos)))
+                    config.perfect, None,
+                    list((config.entry, config.exit_pos)))
     app = UserInterface(maze, (config.width, config.height),
                         config.seed, config.perfect,
                         list((config.entry, config.exit_pos)), None)

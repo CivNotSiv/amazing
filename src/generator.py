@@ -101,7 +101,7 @@ class generate():
             self.connections -= 1
         return (self.grid)
 
-    def solve(self, start_exit) -> None:
+    def solve(self, start_exit: list[tuple[int, int]]) -> None:
         self.solved = bfs(self.grid, start_exit)
 
     def next_style(self) -> None:

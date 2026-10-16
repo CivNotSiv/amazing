@@ -141,7 +141,8 @@ class UserInterface(App[None]):
                         str(self.width), id="width", placeholder="W")
 
                     yield Label("Perfect:")
-                    yield Button(str(self.perfect), id="perfect", classes="span-2")
+                    yield Button(str(self.perfect), id="perfect",
+                                 classes="span-2")
 
                     yield Label("Start:")
                     yield self.ScrollInput(
@@ -162,8 +163,6 @@ class UserInterface(App[None]):
 
                 yield Label("Wall style", id="style-label")
                 yield Button(str(self.maze.selected.name), id="style")
-                
-
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "generate":
@@ -184,8 +183,8 @@ class UserInterface(App[None]):
 
         elif event.button.id == "reset":
             self.maze = generate((self.width, self.height), self.seed,
-                                  self.perfect, self.current_style,
-                                  self.start_exit)
+                                 self.perfect, self.current_style,
+                                 self.start_exit)
             self.update_maze()
 
         if event.button.id == "step":
@@ -217,7 +216,7 @@ class UserInterface(App[None]):
             self.query_one("#style", Button).label = self.maze.selected.name
             self.update_maze()
 
-    def read_maze_settings(self):
+    def read_maze_settings(self) -> tuple[int, int, int] | None:
         """
             check weither the input fields are numbers
             Return (width, height, seed) from the inputs, or None if invalid.
@@ -227,28 +226,31 @@ class UserInterface(App[None]):
             height = int(self.query_one("#height", Input).value)
             seed = int(self.query_one("#seed", Input).value)
         except ValueError:
-            self.notify("Width, height and seed must be whole numbers", severity="error")
+            self.notify("Width, height and seed must be whole numbers",
+                        severity="error")
             return None
 
         if width < 1 or height < 1:
-            self.notify("Width and height must be at least 1", severity="error")
+            self.notify("Width and height must be at least 1",
+                        severity="error")
             return None
 
         return width, height, seed
 
-    def read_start_exit(self):
+    def read_start_exit(self) -> list[tuple[int, int]] | None:
         """
-            check weither the input fields are numbers and clamps to maze size if too large
-            Return ((start_y, start_x), (exit_y, exit_x)) from the inputs, or None if invalid.
+            check weither the input fields are numbers and clamps
+            to maze size if too large Return ((start_y, start_x),
+            (exit_y, exit_x)) from the inputs, or None if invalid.
         """
         try:
             start = (
-                int(self.query_one("#start-y").value),
-                int(self.query_one("#start-x").value),
+                int(self.query_one("#start-y", Input).value),
+                int(self.query_one("#start-x", Input).value),
             )
             exit_ = (
-                int(self.query_one("#exit-y").value),
-                int(self.query_one("#exit-x").value),
+                int(self.query_one("#exit-y", Input).value),
+                int(self.query_one("#exit-x", Input).value),
             )
         except ValueError:
             self.notify("Start/exit must be whole numbers", severity="error")
@@ -259,13 +261,13 @@ class UserInterface(App[None]):
                 start = (self.height - 1, start[1])
             if start[1] > self.width - 1:
                 start = (start[0], self.width - 1)
-    
+
         if exit_[0] > self.height or exit_[1] > self.width - 1:
             if exit_[0] > self.height:
                 exit_ = (self.height - 1, exit_[1])
             if exit_[1] > self.width - 1:
                 exit_ = (exit_[0], self.width - 1)
-        return start, exit_
+        return [start, exit_]
 
     class ScrollInput(Input):
         """
