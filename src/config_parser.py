@@ -53,7 +53,7 @@ class MazeConfig(BaseModel):
         the parameters of the maze. It also checks for if the ENTRY and EXIT
         are on the same cell which should not be possible.
         """
-        for name, (x, y) in (("ENTRY", self.entry), ("EXIT", self.exit_pos)):
+        for name, (y, x) in (("ENTRY", self.entry), ("EXIT", self.exit_pos)):
             if not (0 <= x < self.width and 0 <= y < self.height):
                 raise ValueError(f"{name} {x},{y} is outside the "
                                  f"{self.width}x{self.height} maze")
