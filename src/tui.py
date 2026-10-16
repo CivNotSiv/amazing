@@ -256,16 +256,16 @@ class UserInterface(App[None]):
             self.notify("Start/exit must be whole numbers", severity="error")
             return None
 
-        if start[0] > self.height or start[1] > self.width - 1:
-            if start[0] > self.height:
+        if start[0] >= self.height or start[1] > self.width - 1:
+            if start[0] >= self.height:
                 start = (self.height - 1, start[1])
-            if start[1] > self.width - 1:
+            if start[1] >= self.width:
                 start = (start[0], self.width - 1)
 
-        if exit_[0] > self.height or exit_[1] > self.width - 1:
-            if exit_[0] > self.height:
+        if exit_[0] >= self.height or exit_[1] > self.width - 1:
+            if exit_[0] >= self.height:
                 exit_ = (self.height - 1, exit_[1])
-            if exit_[1] > self.width - 1:
+            if exit_[1] >= self.width:
                 exit_ = (exit_[0], self.width - 1)
         return [start, exit_]
 
