@@ -24,7 +24,7 @@ class generate():
         AMOUNGS = ("ඞ", "ඞ", "ඞ", "ඞ", "⚠")
 
     def __init__(self, size: tuple[int, int], seed: int,
-                 perfect: bool, selected: Style | None,
+                 perfect: bool, selected: Style,
                  solved: list[tuple[int, int]]):
         rand.seed(seed)
         self.size = size

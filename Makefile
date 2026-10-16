@@ -13,5 +13,5 @@ lint:
 clean:
 	rm -rf __pycache__
 	rm -rf mypy_cache
-	rm -rf .venv
+	rm -rf venv
 	rm -rf .mypy_cache
