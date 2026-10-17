@@ -13,5 +13,6 @@ if __name__ == "__main__":
                     list((config.entry, config.exit_pos)))
     app = UserInterface(maze, (config.width, config.height),
                         config.seed, config.perfect,
-                        list((config.entry, config.exit_pos)), None)
+                        list((config.entry, config.exit_pos)),
+                        config.output_file, None)
     app.run()

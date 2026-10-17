@@ -23,6 +23,13 @@ class generate():
         THISWAY = ("↺", "⇵", "⇌", "↺", "☹")
         AMOUNGS = ("ඞ", "ඞ", "ඞ", "ඞ", "⚠")
 
+    DIRECTIONS: dict[tuple[int, int], str] = {
+        (-1, 0): "N",
+        (1, 0): "S",
+        (0, 1): "E",
+        (0, -1): "W",
+    }
+
     def __init__(self, size: tuple[int, int], seed: int,
                  perfect: bool, selected: Style | None,
                  solved: list[tuple[int, int]]):
@@ -153,5 +160,28 @@ class generate():
         line.append("\n")
         return "".join(line)
 
-    def export_maze(self) -> None:
-        return
+    def _path_to_exit(self) -> str:
+        steps: list[str] = ["\n"]
+        for (y1, x1), (y2, x2) in zip(self.solved, self.solved[1:]):
+            delta = (y2 - y1, x2 - x1)
+            try:
+                steps.append(self.DIRECTIONS[delta])
+            except KeyError:
+                return ""
+        return str("".join(steps))
+
+    def export_maze(self, filename: str,
+                    start_exit: list[tuple[int, int]]) -> None:
+        out_str = "\n".join(
+            "".join(f"{cell:x}" for cell in row) for row in self.grid
+        )
+        start = str(start_exit[0]).strip("()")
+        exit_ = str(start_exit[1]).strip("()")
+        start = start + "          #start (y,x)\n"
+        exit_ = exit_ + "          #exit (y,x)"
+        with open(filename, "w") as fd:
+            fd.write(out_str)
+            fd.write("\n\n")
+            fd.write(start)
+            fd.write(exit_)
+            fd.write(self._path_to_exit())

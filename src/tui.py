@@ -88,11 +88,22 @@ class UserInterface(App[None]):
         width: 100%;
         height: 3;
     }
+
+    #settings-grid ScrollInput,
+    #settings-grid Input,
+    #settings-grid Button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .span-2 { column-span: 2; }
+    .span-3 { column-span: 3; }
+    .span-5 { column-span: 5; }
     """
 
     def __init__(self, maze: generate, size: tuple[int, int],
                  seed: int, perfect: bool, start_exit: list[tuple[int, int]],
-                 style: generate.Style | None) -> None:
+                 output_file: str, style: generate.Style | None) -> None:
         super().__init__()
         self.maze = maze
         self.width = size[0]
@@ -101,6 +112,7 @@ class UserInterface(App[None]):
         self.perfect = perfect
         self.current_style = style
         self.start_exit = start_exit
+        self.output_file = output_file
 
     def update_maze(self) -> None:
         if self.check_maze_fits(self.maze):
@@ -161,19 +173,24 @@ class UserInterface(App[None]):
                         str(self.seed), id="seed", placeholder="Seed",
                         classes="span-5")
 
+                    yield Label("File:")
+                    yield Input(str(self.output_file), id="output",
+                                placeholder="maze.txt", classes="span-2")
+                    yield Button("Export", id="export", classes="span-3")
+
                 yield Label("Wall style", id="style-label")
                 yield Button(str(self.maze.selected.name), id="style")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "generate":
             settings = self.read_maze_settings()
-            if settings is None:
-                return
-            self.width, self.height, self.seed = settings
             start_exit = self.read_start_exit()
-            if start_exit is None:
+            if start_exit is None or settings is None:
                 return
+
+            self.width, self.height, self.seed = settings
             self.start_exit = start_exit
+
             self.maze = generate(
                 (self.width, self.height), self.seed,
                 self.perfect, self.current_style, self.start_exit)
@@ -187,7 +204,7 @@ class UserInterface(App[None]):
                                  self.start_exit)
             self.update_maze()
 
-        if event.button.id == "step":
+        elif event.button.id == "step":
             self.maze.kruskal_play()
             self.query_one("#maze", Static).update(
                             self.maze.draw_maze())
@@ -202,6 +219,20 @@ class UserInterface(App[None]):
 
         elif event.button.id == "quit":
             self.exit()
+
+        elif event.button.id == "export":
+            filename = self.query_one("#output", Input).value.strip()
+            if not filename:
+                self.notify("Enter a file name first", severity="error")
+                return
+            try:
+                self.maze.export_maze(filename, self.start_exit)
+            except OSError as e:
+                self.notify(f"Could not write {filename}: {e.strerror}",
+                            severity="error")
+                return
+            self.output_file = filename
+            self.notify(f"Exported to {filename}")
 
         elif event.button.id == "perfect":
             if self.perfect:
