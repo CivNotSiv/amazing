@@ -1,19 +1,29 @@
 import random as rand
 
 
-def valid_cells(grid: list[list[int]], y: int,
-                x: int) -> list[tuple[int, int]]:
-    valid_cells = []
-    if grid[y][x] & 2 and x < len(grid[y]) - 1 and grid[y][x + 1] != 15:
-        valid_cells.append(tuple((y, x + 1)))
-    if grid[y][x] & 8 and x > 0 and grid[y][x - 1] != 15:
-        valid_cells.append(tuple((y, x - 1)))
-    if grid[y][x] & 4 and y < len(grid) - 1 and grid[y + 1][x] != 15:
-        valid_cells.append(tuple((y + 1, x)))
-    if grid[y][x] & 1 and y > 0 and grid[y - 1][x] != 15:
-        valid_cells.append(tuple((y - 1, x)))
-    return valid_cells
-
+def available_dir(grid: list[list[int]],
+                  current: tuple[int, int]) -> list[tuple[int, int]]:
+    """
+        Finds the available cells from around the current cell and
+        adds them into a tuple
+    """
+    y, x = current
+    walls = grid[y][x]
+    valid: list[tuple[int, int]] = []
+    if (walls & 1):
+        if y - 1 >= 0 and grid[y - 1][x] != 15:
+            valid.append((y - 1, x))
+    if (walls & 2):
+        if x + 1 < len(grid[y]) and grid[y][x + 1] != 15:
+            valid.append((y, x + 1))
+    if (walls & 4):
+        if y + 1 < len(grid) and grid[y + 1][x] != 15:
+            valid.append((y + 1, x))
+    if (walls & 8):
+        if x - 1 >= 0 and grid[y][x - 1] != 15:
+            valid.append((y, x - 1))
+    return valid
+ 
 
 def imperfect(grid: list[list[int]]) -> list[list[int]]:
     for y in range(len(grid)):
@@ -30,7 +40,7 @@ def imperfect(grid: list[list[int]]) -> list[list[int]]:
             if (grid[y][x] % 8):
                 wall += 1
             if wall == 3:
-                cells = valid_cells(grid, y, x)
+                cells = available_dir(grid, (y, x))
                 if not cells:
                     continue
                 rm_wall = rand.choice(cells)
