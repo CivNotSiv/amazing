@@ -1,5 +1,5 @@
 import random as rand
-from .algorithms import kruskal_algo, tree_set, bfs, imperfect
+from .algorithms import kruskal_algo, tree_set, bfs, imperfect, dfs
 from enum import Enum
 
 
@@ -116,7 +116,7 @@ class generate():
         return (self.grid)
 
     def solve(self, start_exit: list[tuple[int, int]]) -> None:
-        self.solved = bfs(self.grid, start_exit)
+        self.solved = dfs(self.grid, start_exit)
         steps: list[str] = ["\n"]
         for (y1, x1), (y2, x2) in zip(self.solved, self.solved[1:]):
             direction = (y2 - y1, x2 - x1)
