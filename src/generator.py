@@ -1,5 +1,5 @@
 import random as rand
-from .algorithms import kruskal_algo, tree_set, bfs
+from .algorithms import kruskal_algo, tree_set, bfs, imperfect
 from enum import Enum
 
 
@@ -41,9 +41,9 @@ class generate():
         self.hidden_grid: list[list[tree_set]] = []
         self.ignore: list[tuple[int, int]] = []
 
-        self.__init_grid__()
-        self.__init_immutable__(STAMP)
-        self.__init_hidden__()
+        self.__init_grid()
+        self.__init_immutable(STAMP)
+        self.__init_hidden()
         self.solved: list[tuple[int, int]] = solved
 
         self.connections = size[0] * size[1] - 1
@@ -55,7 +55,7 @@ class generate():
         else:
             self.selected = selected
 
-    def __init_grid__(self) -> None:
+    def __init_grid(self) -> None:
         """
         generates a x by y grid then zeros it, then it itterates
         over the grid setting the default values
@@ -65,7 +65,7 @@ class generate():
         self.grid = [[(self.grid[i][j] * 0) + 15 for j in range(self.size[0])]
                      for i in range(self.size[1])]
 
-    def __init_immutable__(self, stamp: list[list[int]]) -> None:
+    def __init_immutable(self, stamp: list[list[int]]) -> None:
         """
         generates a list of tuples where the maze generator should
         not touch
@@ -80,7 +80,7 @@ class generate():
                 if stamp[i][j] == 1:
                     self.ignore.append((stamp_y + i, stamp_x + j))
 
-    def __init_hidden__(self) -> None:
+    def __init_hidden(self) -> None:
         """
         inits the hidden grid, we take the list of immutables and overlay
         them on the grid as we itterate over the grid assigning each cell
@@ -96,10 +96,17 @@ class generate():
                 self.hidden_grid[line][cell] = tree_set(identiy)
                 identiy += 1
 
+    def next_style(self) -> None:
+        members = list(self.Style)
+        current = members.index(self.selected)
+        self.selected = members[(current + 1) % len(members)]
+
     def kruskal(self) -> list[list[int]]:
         for _ in range(self.connections):
             self.grid = kruskal_algo(self.grid, self.hidden_grid)
             self.connections -= 1
+        if not self.perfect:
+            self.grid = imperfect(self.grid)
         return self.grid
 
     def kruskal_play(self) -> list[list[int]]:
@@ -110,11 +117,14 @@ class generate():
 
     def solve(self, start_exit: list[tuple[int, int]]) -> None:
         self.solved = bfs(self.grid, start_exit)
-
-    def next_style(self) -> None:
-        members = list(self.Style)
-        current = members.index(self.selected)
-        self.selected = members[(current + 1) % len(members)]
+        steps: list[str] = ["\n"]
+        for (y1, x1), (y2, x2) in zip(self.solved, self.solved[1:]):
+            direction = (y2 - y1, x2 - x1)
+            try:
+                steps.append(self.DIRECTIONS[direction])
+            except KeyError:
+                self.path = ""
+        self.path = str("".join(steps))
 
     def draw_maze(self) -> str:
         """
@@ -160,16 +170,6 @@ class generate():
         line.append("\n")
         return "".join(line)
 
-    def _path_to_exit(self) -> str:
-        steps: list[str] = ["\n"]
-        for (y1, x1), (y2, x2) in zip(self.solved, self.solved[1:]):
-            delta = (y2 - y1, x2 - x1)
-            try:
-                steps.append(self.DIRECTIONS[delta])
-            except KeyError:
-                return ""
-        return str("".join(steps))
-
     def export_maze(self, filename: str,
                     start_exit: list[tuple[int, int]]) -> None:
         out_str = "\n".join(
@@ -177,11 +177,9 @@ class generate():
         )
         start = str(start_exit[0]).strip("()")
         exit_ = str(start_exit[1]).strip("()")
-        start = start + "          #start (y,x)\n"
-        exit_ = exit_ + "          #exit (y,x)"
         with open(filename, "w") as fd:
             fd.write(out_str)
             fd.write("\n\n")
-            fd.write(start)
-            fd.write(exit_)
-            fd.write(self._path_to_exit())
+            fd.write(start + "          #start (y,x)\n")
+            fd.write(exit_ + "          #exit (y,x)")
+            fd.write(self.path)

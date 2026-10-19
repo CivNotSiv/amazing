@@ -15,7 +15,7 @@ class MazeConfig(BaseModel):
     entry: tuple[int, int] = Field(alias="ENTRY")
     exit_pos: tuple[int, int] = Field(alias="EXIT")
     output_file: str = Field(alias="OUTPUT_FILE", min_length=4)
-    perfect: bool = Field(alias="PERFECT")
+    perfect: bool = Field(default=False, alias="PERFECT")
     seed: int = Field(default=42, alias="SEED")
     gen_algo: str | None = Field(default=None, alias="GENERATOR")
     solve_algo: str | None = Field(default=None, alias="SOLVER")
