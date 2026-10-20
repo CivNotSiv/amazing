@@ -45,6 +45,7 @@ class generate():
         self.__init_immutable(STAMP)
         self.__init_hidden()
         self.solved: list[tuple[int, int]] = solved
+        self.path = ""
 
         self.connections = size[0] * size[1] - 1
         if size[0] >= 9 and size[1] >= 9:
