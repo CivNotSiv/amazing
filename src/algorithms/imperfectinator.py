@@ -1,7 +1,8 @@
 import random as rand
 
 
-def valid_cells(grid: list[list[int]], y: int, x: int):
+def valid_cells(grid: list[list[int]],
+                y: int, x: int) -> list[tuple[int, int]]:
     cells = []
     if x < len(grid[y]) - 1:
         if grid[y][x + 1] != 15 and grid[y][x] & 2:
@@ -33,7 +34,7 @@ def imperfect(grid: list[list[int]]) -> list[list[int]]:
                 walls += 1
             if grid[y][x] & 8:
                 walls += 1
-            if walls > 2:
+            if walls == 3:
                 deadends.append((y, x))
 
     for _ in range(len(deadends)):

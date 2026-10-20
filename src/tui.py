@@ -197,6 +197,7 @@ class UserInterface(App[None]):
 
             self.maze.kruskal()
             self.update_maze()
+            # self.query_one("#seed", Input) = self.seed + 1
 
         elif event.button.id == "reset":
             self.maze = generate((self.width, self.height), self.seed,

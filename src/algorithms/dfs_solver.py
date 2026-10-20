@@ -1,13 +1,13 @@
-def _get_neighbor(grid: list[int], current: tuple[int, int]) -> list[
-    tuple[int, int]]:
+def _get_neighbor(grid: list[list[int]],
+                  current: tuple[int, int]) -> list[tuple[int, int]]:
     '''
     returns a list holding tuples of coordinates of valid neighbors
     (this function does not track for parent/visited nodes).
-    
+
     checks the current cell and compares it bitwise values of 1, 2, 4 and 8,
     these values represent the 'walls' of the cell in order of 'NESW'.
     This function also checks if the neighbors are valid (out of bounds/walls)
-    
+
     lowkey stole ur func lel... now that I'm writing this I could've js used
     used ur func instead of remaking this...
     '''
@@ -16,7 +16,7 @@ def _get_neighbor(grid: list[int], current: tuple[int, int]) -> list[
     neighbors: list[tuple[int, int]] = []
     if not cell & 1 and y > 0 and grid[y - 1][x] != 15:
         neighbors.append((y - 1, x))
-    if not cell & 2  and x + 1 < len(grid[y]) and grid[y][x + 1] != 15:
+    if not cell & 2 and x + 1 < len(grid[y]) and grid[y][x + 1] != 15:
         neighbors.append((y, x + 1))
     if not cell & 4 and y + 1 < len(grid) and grid[y + 1][x] != 15:
         neighbors.append((y + 1, x))
@@ -24,8 +24,9 @@ def _get_neighbor(grid: list[int], current: tuple[int, int]) -> list[
         neighbors.append((y, x - 1))
     return neighbors
 
-def dfs(grid: list[int], start_exit: tuple[tuple[int, int]]) -> list[
-    tuple[int, int]]:
+
+def dfs(grid: list[list[int]],
+        start_exit: list[tuple[int, int]]) -> list[tuple[int, int]]:
     '''
     returns a list of a tuples that hold the coordinates of the path that was
     used to find the exit or an empty list if no path was found.
@@ -36,14 +37,14 @@ def dfs(grid: list[int], start_exit: tuple[tuple[int, int]]) -> list[
     making it backtrack to the last point where it can go into another
     direction going in order of 'NESW'.
     '''
-    start, end = start_exit
-    stack: list[tuple[int, int]] = [start]
-    parents: dict[tuple[int, int], tuple[int, int]] = {start: None}
+    stack: list[tuple[int, int]] = [start_exit[0]]
+    parents: dict[tuple[int, int], tuple[int, int] | None]
+    parents = {start_exit[0]: None}
     while stack:
         current = stack.pop()
-        if current == end:
+        if current == start_exit[1]:
             path: list[tuple[int, int]] = []
-            node: tuple[int, int] = current
+            node: tuple[int, int] | None = current
             while node is not None:
                 path.append(node)
                 node = parents[node]

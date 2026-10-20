@@ -116,7 +116,12 @@ class generate():
         return (self.grid)
 
     def solve(self, start_exit: list[tuple[int, int]]) -> None:
-        self.solved = dfs(self.grid, start_exit)
+        dfs_path = dfs(self.grid, start_exit)
+        bfs_path = bfs(self.grid, start_exit)
+        if len(dfs_path) > len(bfs_path):
+            self.solved = bfs_path
+        else:
+            self.solved = dfs_path
         steps: list[str] = ["\n"]
         for (y1, x1), (y2, x2) in zip(self.solved, self.solved[1:]):
             direction = (y2 - y1, x2 - x1)
