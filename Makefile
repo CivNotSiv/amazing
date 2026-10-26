@@ -4,11 +4,16 @@ run:
 install:
 	pip install -r requirements.txt
 
+build:
+	pip install build
+	python -m build
+	mv ./dist/*.whl . && rm -rf dist && rm -rf src/mazegen.egg-info
+
 debug:
 	.venv/bin/python3 -m pdb a_maze_ing.py config.txt
 
 lint:
-	python3 -m flake8 . && mypy --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs .
+	python3 -m flake8 --exclude=.venv . && python3 -m mypy --strict --exclude '^.venv/' .
 
 clean:
 	rm -rf __pycache__
