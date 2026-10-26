@@ -1,5 +1,7 @@
 import sys
-from src import generate, UserInterface, parse_config, ConfigError
+from src import UserInterface, parse_config, ConfigError
+from src import generate
+# from mazegen import generate
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
