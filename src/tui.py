@@ -1,9 +1,16 @@
-from .generator import generate
+from .mazegen import generate
 from textual.app import App, ComposeResult
 from textual.widgets import Static, Button, Input, Label
 from textual.containers import Container, Horizontal, Vertical, Grid
 from textual import events
 from typing import Any
+
+
+THEMES = [
+    "monokai",
+    "textual-dark",
+    "gruvbox",
+]
 
 
 class UserInterface(App[None]):
@@ -12,7 +19,7 @@ class UserInterface(App[None]):
         min-width: 50;
         min-height: 50;
         align: center middle;
-        border: round cyan;
+        border: round $primary;
     }
 
     #maze-container {
@@ -24,7 +31,7 @@ class UserInterface(App[None]):
     #maze {
         width: auto;
         height: auto;
-        color: cyan;
+        color: $primary;
     }
 
     #controls {
@@ -36,14 +43,14 @@ class UserInterface(App[None]):
     .panel {
         width: 1fr;
         height: auto;
-        border: round cyan;
+        border: round $primary;
         padding: 1;
         margin-bottom: 1;
     }
 
     Button:focus {
         text-style: none;
-        color: cyan;
+        color: $primary;
     }
 
     #actions Button {
@@ -53,6 +60,16 @@ class UserInterface(App[None]):
 
     #actions Button:last-of-type {
         margin-bottom: 0;
+    }
+
+    #actions-grid {
+        layout: grid;
+        grid-size: 6;
+        grid-columns: 9 1fr 1fr 9 1fr 1fr;
+        grid-rows: auto;
+        grid-gutter: 0 1;
+        width: 100%;
+        height: auto;
     }
 
     #settings-grid {
@@ -106,6 +123,7 @@ class UserInterface(App[None]):
                  output_file: str, style: generate.Style | None) -> None:
         super().__init__()
         self.maze = maze
+        self.maze_seed = seed
         self.width = size[0]
         self.height = size[1]
         self.seed = seed
@@ -113,6 +131,7 @@ class UserInterface(App[None]):
         self.current_style = style
         self.start_exit = start_exit
         self.output_file = output_file
+        self.theme = THEMES[0]
 
     def update_maze(self) -> None:
         if self.check_maze_fits(self.maze):
@@ -140,6 +159,7 @@ class UserInterface(App[None]):
                 yield Button("Reset", id="reset")
                 yield Button("Step", id="step")
                 yield Button("Solve maze", id="solve")
+                yield Button("Cycle theme", id="theme")
                 yield Button("Quit", id="quit")
 
             with Vertical(id="settings", classes="panel"):
@@ -184,11 +204,12 @@ class UserInterface(App[None]):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "generate":
             settings = self.read_maze_settings()
-            start_exit = self.read_start_exit()
-            if start_exit is None or settings is None:
+            if settings is None:
                 return
-
             self.width, self.height, self.seed = settings
+            start_exit = self.read_start_exit()
+            if start_exit is None:
+                return
             self.start_exit = start_exit
 
             self.maze = generate(
@@ -197,10 +218,12 @@ class UserInterface(App[None]):
 
             self.maze.kruskal()
             self.update_maze()
-            # self.query_one("#seed", Input) = self.seed + 1
+            self.maze_seed = self.seed
+            # self.seed += 1
+            # self.query_one("#seed", Input).value = str(self.seed)
 
         elif event.button.id == "reset":
-            self.maze = generate((self.width, self.height), self.seed,
+            self.maze = generate((self.width, self.height), self.maze_seed,
                                  self.perfect, self.current_style,
                                  self.start_exit)
             self.update_maze()
@@ -217,6 +240,18 @@ class UserInterface(App[None]):
             self.start_exit = start_exit
             self.maze.solve(self.start_exit)
             self.update_maze()
+
+        elif event.button.id == "theme":
+            """
+            Switch to the next theme in themes
+            """
+            themes = [t for t in THEMES if t in self.available_themes]
+            try:
+                index = themes.index(self.theme)
+            except ValueError:
+                index = -1
+            self.theme = themes[(index + 1) % len(themes)]
+            self.notify(f"Theme: {self.theme}")
 
         elif event.button.id == "quit":
             self.exit()
