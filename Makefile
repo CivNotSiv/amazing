@@ -5,7 +5,7 @@ install:
 	pip install -r requirements.txt
 
 build:
-	rm *.whl
+	rm -rf *.whl
 	pip install build
 	python -m build
 	mv ./dist/*.whl . 

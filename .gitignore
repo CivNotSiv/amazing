@@ -7,3 +7,4 @@ __pycache__
 !README.md
 !Makefile
 maze_analyzer.py
+dist
