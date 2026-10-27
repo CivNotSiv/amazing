@@ -21,7 +21,7 @@ def valid_cells(grid: list[list[int]],
     return cells
 
 
-def imperfect_play(grid: list[list[int]]) -> list[list[int]]:
+def imperfect_play(grid: list[list[int]]) -> tuple[list[list[int]], bool]:
     for y in range(len(grid)):
         for x in range(len(grid[y])):
             if grid[y][x] == 15:
@@ -52,8 +52,8 @@ def imperfect_play(grid: list[list[int]]) -> list[list[int]]:
                 elif rmx > x:
                     grid[y][x] -= 2
                     grid[rmy][rmx] -= 8
-                return grid
-    return grid
+                return grid, False
+    return grid, True
 
 
 def imperfect(grid: list[list[int]]) -> list[list[int]]:

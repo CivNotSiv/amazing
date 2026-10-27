@@ -103,21 +103,23 @@ class generate():
         current = members.index(self.selected)
         self.selected = members[(current + 1) % len(members)]
 
-    def kruskal(self) -> list[list[int]]:
+    def kruskal(self):
         for _ in range(self.connections):
             self.grid = kruskal_algo(self.grid, self.hidden_grid)
             self.connections -= 1
         if not self.perfect:
             self.grid = imperfect(self.grid)
-        return self.grid
 
-    def kruskal_play(self) -> list[list[int]]:
+    def kruskal_play(self) -> bool:
+        completed = False
+        if not self.connections and self.perfect:
+            completed = True
         if self.connections:
             self.grid = kruskal_algo(self.grid, self.hidden_grid)
             self.connections -= 1
         if not self.connections and not self.perfect:
-            self.grid = imperfect_play(self.grid)
-        return (self.grid)
+            self.grid, completed = imperfect_play(self.grid)
+        return completed
 
     def solve(self, start_exit: list[tuple[int, int]]) -> None:
         dfs_path = dfs(self.grid, start_exit)

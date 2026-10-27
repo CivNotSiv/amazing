@@ -2,8 +2,10 @@ from .mazegen import generate
 from textual.app import App, ComposeResult
 from textual.widgets import Static, Button, Input, Label
 from textual.containers import Container, Horizontal, Vertical, Grid
-from textual import events
+from textual import work, events
 from typing import Any
+from time import sleep
+import asyncio
 
 
 THEMES = [
@@ -14,109 +16,8 @@ THEMES = [
 
 
 class UserInterface(App[None]):
-    CSS = """
-    Screen {
-        min-width: 50;
-        min-height: 50;
-        align: center middle;
-        border: round $primary;
-    }
 
-    #maze-container {
-        width: 100%;
-        height: 1fr;
-        align: center middle;
-    }
-
-    #maze {
-        width: auto;
-        height: auto;
-        color: $primary;
-    }
-
-    #controls {
-        dock: bottom;
-        width: 100%;
-        height: auto;
-    }
-
-    .panel {
-        width: 1fr;
-        height: auto;
-        border: round $primary;
-        padding: 1;
-        margin-bottom: 1;
-    }
-
-    Button:focus {
-        text-style: none;
-        color: $primary;
-    }
-
-    #actions Button {
-        width: 100%;
-        margin-bottom: 1;
-    }
-
-    #actions Button:last-of-type {
-        margin-bottom: 0;
-    }
-
-    #actions-grid {
-        layout: grid;
-        grid-size: 6;
-        grid-columns: 9 1fr 1fr 9 1fr 1fr;
-        grid-rows: auto;
-        grid-gutter: 0 1;
-        width: 100%;
-        height: auto;
-    }
-
-    #settings-grid {
-        layout: grid;
-        grid-size: 6;
-        grid-columns: 9 1fr 1fr 9 1fr 1fr;
-        grid-rows: auto;
-        grid-gutter: 0 1;
-        width: 100%;
-        height: auto;
-    }
-
-    #settings-grid Label {
-        width: 100%;
-        height: 3;
-        content-align: left middle;
-    }
-
-    #settings-grid ScrollInput,
-    #settings-grid Button {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .span-2 { column-span: 2; }
-    .span-5 { column-span: 5; }
-
-    #style-label {
-        margin-top: 1;
-    }
-
-    #style {
-        width: 100%;
-        height: 3;
-    }
-
-    #settings-grid ScrollInput,
-    #settings-grid Input,
-    #settings-grid Button {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .span-2 { column-span: 2; }
-    .span-3 { column-span: 3; }
-    .span-5 { column-span: 5; }
-    """
+    CSS_PATH = "tui_css"
 
     def __init__(self, maze: generate, size: tuple[int, int],
                  seed: int, perfect: bool, start_exit: list[tuple[int, int]],
@@ -132,11 +33,22 @@ class UserInterface(App[None]):
         self.start_exit = start_exit
         self.output_file = output_file
         self.theme = THEMES[0]
+        self.play = 0
 
     def update_maze(self) -> None:
         if self.check_maze_fits(self.maze):
             self.query_one("#maze", Static).update(
                 self.maze.draw_maze())
+
+    def update_settings(self) -> None:
+        settings = self.read_maze_settings()
+        if settings is None:
+            return
+        self.width, self.height, self.seed = settings
+        start_exit = self.read_start_exit()
+        if start_exit is None:
+            return
+        self.start_exit = start_exit
 
     def check_maze_fits(self, maze: generate) -> bool:
         lines = str(maze.draw_maze()).splitlines()
@@ -157,7 +69,7 @@ class UserInterface(App[None]):
             with Vertical(id="actions", classes="panel"):
                 yield Button("Generate maze", id="generate")
                 yield Button("Reset", id="reset")
-                yield Button("Step", id="step")
+                yield Button("Play", id="play")
                 yield Button("Solve maze", id="solve")
                 yield Button("Cycle theme", id="theme")
                 yield Button("Quit", id="quit")
@@ -201,17 +113,9 @@ class UserInterface(App[None]):
                 yield Label("Wall style", id="style-label")
                 yield Button(str(self.maze.selected.name), id="style")
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
+    async def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "generate":
-            settings = self.read_maze_settings()
-            if settings is None:
-                return
-            self.width, self.height, self.seed = settings
-            start_exit = self.read_start_exit()
-            if start_exit is None:
-                return
-            self.start_exit = start_exit
-
+            self.update_settings()
             self.maze = generate(
                 (self.width, self.height), self.seed,
                 self.perfect, self.current_style, self.start_exit)
@@ -219,19 +123,24 @@ class UserInterface(App[None]):
             self.maze.kruskal()
             self.update_maze()
             self.maze_seed = self.seed
-            # self.seed += 1
-            # self.query_one("#seed", Input).value = str(self.seed)
 
         elif event.button.id == "reset":
             self.maze = generate((self.width, self.height), self.maze_seed,
                                  self.perfect, self.current_style,
                                  self.start_exit)
             self.update_maze()
+            self.play = 0
+            self.query_one("#play", Button).label = "Play"
 
-        elif event.button.id == "step":
-            self.maze.kruskal_play()
-            self.query_one("#maze", Static).update(
-                            self.maze.draw_maze())
+        elif event.button.id == "play":
+            self.update_settings()
+            if self.play == 0:
+                self.play = 1
+                asyncio.create_task(self.animate_gen())
+                self.query_one("#play", Button).label = "Pause"
+            else:
+                self.play = 0
+                self.query_one("#play", Button).label = "Play"
 
         elif event.button.id == "solve":
             start_exit = self.read_start_exit()
@@ -282,6 +191,26 @@ class UserInterface(App[None]):
             self.current_style = self.maze.selected
             self.query_one("#style", Button).label = self.maze.selected.name
             self.update_maze()
+
+    async def animate_gen(self) -> None:
+        max_connections = self.width * self.height - 1
+        if self.width >= 9 and self.height >= 9:
+            max_connections -= len(self.maze.ignore)
+
+        if not self.maze.connections or self.maze.connections == max_connections:
+            self.maze = generate(
+                (self.width, self.height), self.seed,
+                self.perfect, self.current_style, self.start_exit)
+            self.update_maze()
+
+        while self.play:
+            tmp2 = self.maze.grid
+            if self.maze.kruskal_play():
+                self.play = 0
+                self.query_one("#play", Button).label = "Play"
+                return
+            self.query_one("#maze", Static).update(self.maze.draw_maze())
+            await asyncio.sleep(0.05)
 
     def read_maze_settings(self) -> tuple[int, int, int] | None:
         """
