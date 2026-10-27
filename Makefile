@@ -20,3 +20,5 @@ lint:
 clean:
 	pyclean . --debris
 	rm -rf .mypy_cache
+
+.PHONY: run install build debug lint clean
