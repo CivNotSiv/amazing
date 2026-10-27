@@ -3,7 +3,7 @@
 # A MAZE ING
 
 ## Description
-
+The goal of this project is to create a maze generator, the maze generator must parse values from a config file, be capable of providing a solution to the maze given the enrty and exit positions, export the maze in a hexedeciaml format, switch between perfect and imperfect maze generation methods and above all else it must provide a method vizualise the program.
 
 ## Instructions
 ### Getting Started
