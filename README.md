@@ -49,6 +49,24 @@ There are 7 styles available, they can be easily customised in the Styles enum i
 <img src="https://raw.githubusercontent.com/CivNotSiv/md_resources/refs/heads/main/amazing/bally.png" width="200" height="200" />
 </p>
 
+## Running Headless
+In order to run the maze generator as a standalone package, you can either use the provided .whl or the `make build` command which will rebuild the .whl for later installation.
+
+once you have your package you can run `pip install mazegen-*.whl` to install the package, then you can import the generate class witch contains all the relivant funcitons for maze generation and solving.
+
+Example:
+```
+from mazegen import generate
+
+maze = generate((9,9), 42, True, None, ((0,0),(8,8)))
+maze.kruskal()
+maze.solve()
+print(f"{maze.draw_maze()}")
+
+maze.solve(((0,0),(8,8)))
+print(f"{maze.draw_maze()}")
+```
+
 ## Algorithms
 
 ### Maze Generation
