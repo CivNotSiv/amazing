@@ -26,16 +26,18 @@ The imperfect maze on the left contains multiple loops and no deadends (except t
 
 #### Themes and Wall Styles
 There are 3 themes available by default
-
+<p float="left">
 <img src="https://raw.githubusercontent.com/CivNotSiv/md_resources/refs/heads/main/amazing/blue.png" width="200" height="200" />
 <img src="https://raw.githubusercontent.com/CivNotSiv/md_resources/refs/heads/main/amazing/purple.png" width="200" height="200" />
 <img src="https://raw.githubusercontent.com/CivNotSiv/md_resources/refs/heads/main/amazing/greeny.png" width="200" height="200" />
+</p>
 
 There are 7 styles available, they can be easily customised in the Styles enum in the generator class
-
+<p float="left">
 <img src="https://raw.githubusercontent.com/CivNotSiv/md_resources/refs/heads/main/amazing/brealy.png" width="200" height="200" />
 <img src="https://raw.githubusercontent.com/CivNotSiv/md_resources/refs/heads/main/amazing/spikey.png" width="200" height="200" />
 <img src="https://raw.githubusercontent.com/CivNotSiv/md_resources/refs/heads/main/amazing/bally.png" width="200" height="200" />
+</p>
 
 ## Algorithms
 
