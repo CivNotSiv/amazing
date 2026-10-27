@@ -72,7 +72,7 @@ class generate():
         generates a list of tuples where the maze generator should
         not touch
         """
-        if len(self.grid) < 9 or len(self.grid[0]) < 9:
+        if len(self.grid) < 14 or len(self.grid[0]) < 14:
             return
 
         stamp_y = (len(self.grid) - len(stamp)) // 2
