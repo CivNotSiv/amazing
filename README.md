@@ -55,17 +55,29 @@ There are 7 styles available, they can be easily customised in the Styles enum i
 
 - kruskal's algorithm
 ```
-        kruskal was chosen primarily due to its simplicity, cells are selected at random and a wall is removed from a random direction, the neibouring cell has its root updated to reflect the wall breaking. This process is repeated until the amount of remaining valid connections is zero. By the end every cell is a part of the same root (appart from the cells with the 42)
+        kruskal was chosen primarily due to its simplicity,
+        cells are selected at random and a wall is removed
+        from a random direction, the neibouring cell has its
+        root updated to reflect the wall breaking. This process
+        is repeated until the amount of remaining valid connections 
+        is zero. By the end every cell is a part of the same root 
+        (appart from the cells with the 42)
 ```
 ### Maze Solving
 
 - BFS
 ```
-        BFS was used due to its simplicity to implement and its reliablility. from the start point it runs NESW, each cell visited is added into the path taken and whenever a path runs out of options the solver jumps back to the next valid turning point
+        BFS was used due to its simplicity to implement and its
+        reliablility. from the start point it runs NESW, each cell
+        visited is added into the path taken and whenever a path runs
+        out of options the solver jumps back to the next valid turning
+        point
 ```
 - DFS
 ```
-        DFS is conceptually very similar to BFS, rather than jumping back to the next node in the list it traverses backwards towards the next available node
+        DFS is conceptually very similar to BFS, rather than jumping
+        back to the next node in the list it traverses backwards
+        towards the next available node
 ```
 
 # Workflow distribution & credits
