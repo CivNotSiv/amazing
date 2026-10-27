@@ -2,9 +2,8 @@ from .mazegen import generate
 from textual.app import App, ComposeResult
 from textual.widgets import Static, Button, Input, Label
 from textual.containers import Container, Horizontal, Vertical, Grid
-from textual import work, events
+from textual import events
 from typing import Any
-from time import sleep
 import asyncio
 
 
@@ -193,18 +192,17 @@ class UserInterface(App[None]):
             self.update_maze()
 
     async def animate_gen(self) -> None:
-        max_connections = self.width * self.height - 1
+        max_conn = self.width * self.height - 1
         if self.width >= 9 and self.height >= 9:
-            max_connections -= len(self.maze.ignore)
+            max_conn -= len(self.maze.ignore)
 
-        if not self.maze.connections or self.maze.connections == max_connections:
+        if (not self.maze.connections or self.maze.connections == max_conn):
             self.maze = generate(
                 (self.width, self.height), self.seed,
                 self.perfect, self.current_style, self.start_exit)
             self.update_maze()
 
         while self.play:
-            tmp2 = self.maze.grid
             if self.maze.kruskal_play():
                 self.play = 0
                 self.query_one("#play", Button).label = "Play"

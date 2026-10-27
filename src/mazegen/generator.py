@@ -103,7 +103,7 @@ class generate():
         current = members.index(self.selected)
         self.selected = members[(current + 1) % len(members)]
 
-    def kruskal(self):
+    def kruskal(self) -> None:
         for _ in range(self.connections):
             self.grid = kruskal_algo(self.grid, self.hidden_grid)
             self.connections -= 1
