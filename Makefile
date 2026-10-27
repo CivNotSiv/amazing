@@ -5,18 +5,18 @@ install:
 	pip install -r requirements.txt
 
 build:
+	rm *.whl
 	pip install build
 	python -m build
-	mv ./dist/*.whl . && rm -rf dist && rm -rf src/mazegen.egg-info
+	mv ./dist/*.whl . 
 
 debug:
 	.venv/bin/python3 -m pdb a_maze_ing.py config.txt
 
 lint:
-	python3 -m flake8 --exclude=.venv . && python3 -m mypy --strict --exclude '^.venv/' .
+	python3 -m flake8 --exclude=.venv . 
+	python3 -m mypy --strict --exclude '^.venv/' .
 
 clean:
-	rm -rf __pycache__
-	rm -rf mypy_cache
-	rm -rf venv
+	pyclean . --debris
 	rm -rf .mypy_cache

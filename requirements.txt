@@ -1,4 +1,5 @@
 textual
+pyclean
 pydantic
 flake8
 mypy
