@@ -5,6 +5,7 @@ install:
 	pip install -r requirements.txt
 
 build:
+	pip install -r requirements.txt
 	rm -rf *.whl
 	pip install build
 	python -m build
