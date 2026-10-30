@@ -81,6 +81,17 @@ print(f"{maze.draw_maze()}")
         is zero. By the end every cell is a part of the same root 
         (appart from the cells with the 42)
 ```
+
+- Imperfectinator
+```
+        The 'Imperfectinator' is a simple custom algortithm that
+        loops over the entire generated maze and where ever it finds
+        a dead end, it looks at the eiboring cells and randomly removes
+        one, it preferentually chooses left to right but should there
+        only be one option thats invalid (borders or 42) it then looks
+        up and down for walls to remove. onve it has completed its checks
+        it moves onto the next cell
+```
 ### Maze Solving
 
 - BFS
