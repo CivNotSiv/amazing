@@ -11,7 +11,7 @@ build:
 	mv ./dist/*.whl . 
 
 debug:
-	.venv/bin/python3 -m pdb a_maze_ing.py config.txt
+	python3 -m pdb a_maze_ing.py config.txt
 
 lint:
 	python3 -m flake8 --exclude=.venv . 
