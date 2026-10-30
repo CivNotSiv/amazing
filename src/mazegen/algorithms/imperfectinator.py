@@ -21,7 +21,8 @@ def valid_cells(grid: list[list[int]],
     return cells
 
 
-def imperfect_play(grid: list[list[int]]) -> tuple[list[list[int]], bool]:
+def imperfect(grid: list[list[int]],
+              play: bool) -> tuple[list[list[int]], bool]:
     for y in range(len(grid)):
         for x in range(len(grid[y])):
             if grid[y][x] == 15:
@@ -52,39 +53,6 @@ def imperfect_play(grid: list[list[int]]) -> tuple[list[list[int]], bool]:
                 elif rmx > x:
                     grid[y][x] -= 2
                     grid[rmy][rmx] -= 8
-                return grid, False
+                if play:
+                    return grid, False
     return grid, True
-
-
-def imperfect(grid: list[list[int]]) -> list[list[int]]:
-    for y in range(len(grid)):
-        for x in range(len(grid[y])):
-            if grid[y][x] == 15:
-                continue
-            walls = 0
-            if grid[y][x] & 1:
-                walls += 1
-            if grid[y][x] & 2:
-                walls += 1
-            if grid[y][x] & 4:
-                walls += 1
-            if grid[y][x] & 8:
-                walls += 1
-            if walls == 3:
-                cells = valid_cells(grid, y, x)
-                if not cells:
-                    continue
-                rmy, rmx = random.choice(cells)
-                if rmy < y:
-                    grid[y][x] -= 1
-                    grid[rmy][rmx] -= 4
-                elif rmy > y:
-                    grid[y][x] -= 4
-                    grid[rmy][rmx] -= 1
-                elif rmx < x:
-                    grid[y][x] -= 8
-                    grid[rmy][rmx] -= 2
-                elif rmx > x:
-                    grid[y][x] -= 2
-                    grid[rmy][rmx] -= 8
-    return grid

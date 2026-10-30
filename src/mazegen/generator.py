@@ -1,6 +1,6 @@
 import random
 from .algorithms import kruskal_algo, tree_set
-from .algorithms import bfs, dfs, imperfect, imperfect_play
+from .algorithms import bfs, dfs, imperfect
 from enum import Enum
 
 
@@ -108,7 +108,7 @@ class generate():
             self.grid = kruskal_algo(self.grid, self.hidden_grid)
             self.connections -= 1
         if not self.perfect:
-            self.grid = imperfect(self.grid)
+            self.grid, completed = imperfect(self.grid, False)
 
     def kruskal_play(self) -> bool:
         completed = False
@@ -118,7 +118,7 @@ class generate():
             self.grid = kruskal_algo(self.grid, self.hidden_grid)
             self.connections -= 1
         if not self.connections and not self.perfect:
-            self.grid, completed = imperfect_play(self.grid)
+            self.grid, completed = imperfect(self.grid, True)
         return completed
 
     def solve(self, start_exit: list[tuple[int, int]]) -> None:
