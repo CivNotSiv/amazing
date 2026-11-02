@@ -119,6 +119,10 @@ class generate():
         self.selected = members[(current + 1) % len(members)]
 
     def generate_maze(self, algo: int = 0) -> None:
+        """
+            the solving algorithm is chosen by passing an int. by default its 0
+            the function runs the selected algoritm until completion
+        """
         if self.chosen_algo is None:
             self.chosen_algo = ALGORITHMS[algo](self.grid, self.hidden_grid)
         while self.connections:
@@ -131,6 +135,11 @@ class generate():
             self.grid, completed = imperfect(self.grid, False)
 
     def generate_maze_play(self, algo: int = 0) -> bool:
+        """
+            the solving algorithm is chosen by passing an int. by default its 0
+            the function runs the selected algoritm for 1 instance then returns
+            if the maze was completed or not
+        """
         if self.chosen_algo is None:
             self.chosen_algo = ALGORITHMS[algo](self.grid, self.hidden_grid)
         completed = False
@@ -148,6 +157,10 @@ class generate():
 
     def solve(self, start_exit: list[tuple[int, int]],
               solver: int = 0) -> None:
+        """
+            takes the start and exit tuples as a list and the solving
+            algoritm chosen. by default its 0
+        """
         if len(self.solved) > 2:
             self.solved = start_exit
             return
