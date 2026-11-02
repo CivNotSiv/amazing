@@ -8,3 +8,4 @@ __pycache__
 !Makefile
 maze_analyzer.py
 dist
+*.egg*
