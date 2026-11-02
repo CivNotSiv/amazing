@@ -1,6 +1,8 @@
 import random
 from .algorithms import kruskal_algo, tree_set
 from .algorithms import bfs, dfs, imperfect
+from .algorithms import dfs_generate
+from collections.abc import Iterator, Callable
 from enum import Enum
 
 
@@ -10,6 +12,18 @@ STAMP: list[list[int]] = [
     [1, 1, 1, 0, 1, 1, 1],
     [0, 0, 1, 0, 1, 0, 0],
     [0, 0, 1, 0, 1, 1, 1],
+]
+
+ALGORITHMS: list[Callable[[list[list[int]],
+                          list[list[tree_set]]],
+                          Iterator[list[list[int]]]]] = [
+    kruskal_algo,
+    dfs_generate,
+]
+
+SOLVERS = [
+    bfs,
+    dfs,
 ]
 
 
@@ -47,6 +61,7 @@ class generate():
         self.__init_hidden()
         self.solved: list[tuple[int, int]] = solved
         self.path = ""
+        self.chosen_algo: Iterator[list[list[int]]] | None = None
 
         self.connections = size[0] * size[1] - 1
         if size[0] >= 9 and size[1] >= 9:
@@ -103,34 +118,41 @@ class generate():
         current = members.index(self.selected)
         self.selected = members[(current + 1) % len(members)]
 
-    def kruskal(self) -> None:
-        for _ in range(self.connections):
-            self.grid = kruskal_algo(self.grid, self.hidden_grid)
+    def generate_maze(self, algo: int = 0) -> None:
+        if self.chosen_algo is None:
+            self.chosen_algo = ALGORITHMS[algo](self.grid, self.hidden_grid)
+        while self.connections:
+            grid = next(self.chosen_algo, None)
+            if grid is None:
+                break
             self.connections -= 1
+            self.grid = grid
         if not self.perfect:
             self.grid, completed = imperfect(self.grid, False)
 
-    def kruskal_play(self) -> bool:
+    def generate_maze_play(self, algo: int = 0) -> bool:
+        if self.chosen_algo is None:
+            self.chosen_algo = ALGORITHMS[algo](self.grid, self.hidden_grid)
         completed = False
         if not self.connections and self.perfect:
             completed = True
         if self.connections:
-            self.grid = kruskal_algo(self.grid, self.hidden_grid)
+            grid = next(self.chosen_algo, None)
+            if grid is None:
+                return True
             self.connections -= 1
+            self.grid = grid
         if not self.connections and not self.perfect:
             self.grid, completed = imperfect(self.grid, True)
         return completed
 
-    def solve(self, start_exit: list[tuple[int, int]]) -> None:
-        dfs_path = dfs(self.grid, start_exit)
-        bfs_path = bfs(self.grid, start_exit)
+    def solve(self, start_exit: list[tuple[int, int]],
+              solver: int = 0) -> None:
         if len(self.solved) > 2:
             self.solved = start_exit
             return
-        if len(dfs_path) > len(bfs_path):
-            self.solved = bfs_path
-        else:
-            self.solved = dfs_path
+        chosen_solver = SOLVERS[solver]
+        self.solved = chosen_solver(self.grid, start_exit)
         steps: list[str] = ["\n"]
         for (y1, x1), (y2, x2) in zip(self.solved, self.solved[1:]):
             direction = (y2 - y1, x2 - x1)
