@@ -31,7 +31,7 @@ these settings can all be changed while the program is running, no need to exit 
 For maze generation you can choose between kruskal's algorithm and a modified DFS named DFG (Depth First Generate). 
 For maze solving you can choose between BFS and DFS.
 
-For more info on any algorithm go to [Algorithms](#algorithm).
+For more info on any algorithm go to [Algorithms](#algorithm-1).
 
 
 #### Imperfect vs Perfect
