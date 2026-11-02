@@ -14,6 +14,18 @@ THEMES = [
 ]
 
 
+GENERATORS = [
+    "Kruskal",
+    "DFG",
+]
+
+
+SOLVERS = [
+    "BFS",
+    "DFS",
+]
+
+
 class UserInterface(App[None]):
 
     CSS_PATH = "tui_css"
@@ -31,8 +43,10 @@ class UserInterface(App[None]):
         self.current_style = style
         self.start_exit = start_exit
         self.output_file = output_file
-        self.theme = THEMES[0]
         self.play = 0
+        self.theme = THEMES[0]
+        self.solver = 0
+        self.generator = 0
 
     def update_maze(self) -> None:
         if self.check_maze_fits(self.maze):
@@ -93,11 +107,19 @@ class UserInterface(App[None]):
                     yield self.ScrollInput(
                         str(start_x), id="start-x", placeholder="X")
 
+                    yield Label("Generate:")
+                    yield Button(GENERATORS[self.generator], id="generator",
+                                 classes="span-2")
+
                     yield Label("Exit:")
                     yield self.ScrollInput(
                         str(exit_y), id="exit-y", placeholder="Y")
                     yield self.ScrollInput(
                         str(exit_x), id="exit-x", placeholder="X")
+
+                    yield Label("Solver:")
+                    yield Button(SOLVERS[self.solver], id="solver",
+                                 classes="span-2")
 
                     yield Label("Seed:")
                     yield self.ScrollInput(
@@ -119,7 +141,7 @@ class UserInterface(App[None]):
                 (self.width, self.height), self.seed,
                 self.perfect, self.current_style, self.start_exit)
 
-            self.maze.kruskal()
+            self.maze.generate_maze(self.generator)
             self.update_maze()
             self.maze_seed = self.seed
 
@@ -146,7 +168,7 @@ class UserInterface(App[None]):
             if start_exit is None:
                 return
             self.start_exit = start_exit
-            self.maze.solve(self.start_exit)
+            self.maze.solve(self.start_exit, self.solver)
             self.update_maze()
 
         elif event.button.id == "theme":
@@ -185,11 +207,24 @@ class UserInterface(App[None]):
                 self.perfect = True
             self.query_one("#perfect", Button).label = f"{str(self.perfect)}"
 
+        elif event.button.id == "generator":
+            self.generator = (self.generator + 1) % len(GENERATORS)
+            event.button.label = GENERATORS[self.generator]
+
+        elif event.button.id == "solver":
+            self.maze.solved = self.start_exit
+            self.solver = (self.solver + 1) % len(SOLVERS)
+            event.button.label = SOLVERS[self.solver]
+
         elif event.button.id == "style":
             self.maze.next_style()
             self.current_style = self.maze.selected
             self.query_one("#style", Button).label = self.maze.selected.name
             self.update_maze()
+
+    def next_option(self, options: list[str], current: str) -> str:
+        """Return the option after `current`, wrapping around at the end."""
+        return options[(options.index(current) + 1) % len(options)]
 
     async def animate_gen(self) -> None:
         max_conn = self.width * self.height - 1
@@ -202,8 +237,9 @@ class UserInterface(App[None]):
                 self.perfect, self.current_style, self.start_exit)
             self.update_maze()
 
+        # generate = self.generate
         while self.play:
-            if self.maze.kruskal_play():
+            if self.maze.generate_maze_play(self.generator):
                 self.play = 0
                 self.query_one("#play", Button).label = "Play"
                 return
