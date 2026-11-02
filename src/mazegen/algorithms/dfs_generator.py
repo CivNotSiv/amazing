@@ -1,4 +1,7 @@
 import random
+from .kuvals import tree_set
+from collections.abc import Iterator
+
 
 _DIRS: tuple[tuple[int, int, int, int], ...] = (
     (1, -1, 0, 4),
@@ -9,8 +12,9 @@ _DIRS: tuple[tuple[int, int, int, int], ...] = (
 
 
 def dfs_generate(grid: list[list[int]],
-                 start: tuple[int, int],
-                 stamp: list[tuple[int, int]]) -> list[list[int]]:
+                 stamp: list[list[tree_set]],
+                 start: tuple[int, int] = ((0, 0))
+                 ) -> Iterator[list[list[int]]]:
     '''
     Starts from cell 'start' and checks the surrounding cells for valid moves
     within the options provided by '_DIRS'. Then breaks the walls and creates
@@ -19,8 +23,14 @@ def dfs_generate(grid: list[list[int]],
     If no valid options found pop current item in stack and backtrack and
     continue traversing from the last point that has options available.
     '''
+    immutable: set[tuple[int, int]] = set()
+    for y, row in enumerate(stamp):
+        for x, cell in enumerate(row):
+            if cell.identiy == 0:
+                immutable.add((y, x))
+
     height, width = len(grid), len(grid[0])
-    seen: set[tuple[int, int]] = set(stamp) | {start}
+    seen: set[tuple[int, int]] = set(immutable) | {start}
     stack: list[tuple[int, int]] = [start]
     while stack:
         y, x = stack[-1]
@@ -39,4 +49,4 @@ def dfs_generate(grid: list[list[int]],
         grid[new_y][new_x] &= ~opposite
         seen.add((new_y, new_x))
         stack.append((new_y, new_x))
-    return grid
+        yield grid
