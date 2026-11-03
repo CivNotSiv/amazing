@@ -69,12 +69,23 @@ Example:
 from mazegen import generate
 
 maze = generate((9,9), 42, True, None, ((0,0),(8,8)))
-maze.kruskal()
-maze.solve()
+maze.generate_maze(0)
+maze.solve(0)
 print(f"{maze.draw_maze()}")
 
 maze.solve(((0,0),(8,8)))
 print(f"{maze.draw_maze()}")
+
+usage of generate();
+the parameters given should be in order of; a tuple of 2 ints holding the height and width of the maze, a int value of the seed, a boolean that represents if the maze is perfect, None which represents the style, and a tuple of 2 tuples holding 2 int values which hold the coordinates to the start and exit.
+
+
+usage of .generate_maze();
+give a int value which should be either 0 or 1. the value represent which algorithm to use for the generation of the maze. the default value is 0 which represents kruskals,
+1 represents DFG.
+
+usage of .solve();
+give a int value which should be either 0 or 1. the value represents which algorithm to use for solving the maze. the default value is 0 which represents BFS, 1 represents DFS.
 ```
 
 ## Algorithms
