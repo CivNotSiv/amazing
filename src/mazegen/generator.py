@@ -64,6 +64,7 @@ class generate():
         self.path = ""
         self.chosen_algo: Iterator[list[list[int]]] | None = None
         self.maze_steps: list[list[list[int]]] = []
+        self.generated = False
 
         self.connections = size[0] * size[1] - 1
         if size[0] >= 9 and size[1] >= 9:
@@ -133,12 +134,12 @@ class generate():
                 break
             self.connections -= 1
             self.grid = grid
-            self.maze_steps.append(self.grid)
+            self.maze_steps.append([row[:] for row in grid])
 
         completed = False
         while not completed and not self.perfect:
             self.grid, completed = imperfect(self.grid, True)
-            self.maze_steps.append(self.grid)
+            self.maze_steps.append([row[:] for row in grid])
 
     def generate_maze_play(self, algo: int = 0) -> bool:
         """
@@ -146,16 +147,13 @@ class generate():
             the function runs the selected algoritm for 1 instance then returns
             if the maze was completed or not
         """
-        if len(self.maze_steps) == 0:
+        if not self.generated:
             self.generate_maze(algo)
-        completed = False
-        if len(self.maze_steps) > 0:
+            self.generated = True
+        if self.maze_steps:
             self.grid = self.maze_steps.pop(0)
-            print(f"{self.grid}\n")
-            self.connections -= 1
-        else:
-            completed = True
-        return completed
+            return False
+        return True
 
     def solve(self, start_exit: list[tuple[int, int]],
               solver: int = 0) -> None:

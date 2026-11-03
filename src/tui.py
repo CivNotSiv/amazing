@@ -140,7 +140,8 @@ class UserInterface(App[None]):
             self.maze = generate(
                 (self.width, self.height), self.seed,
                 self.perfect, self.current_style, self.start_exit)
-
+            self.play = 0
+            self.query_one("#play", Button).label = "Play"
             self.maze.generate_maze(self.generator)
             self.update_maze()
             self.maze_seed = self.seed
