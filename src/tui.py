@@ -237,7 +237,6 @@ class UserInterface(App[None]):
                 self.perfect, self.current_style, self.start_exit)
             self.update_maze()
 
-        # generate = self.generate
         while self.play:
             if self.maze.generate_maze_play(self.generator):
                 self.play = 0

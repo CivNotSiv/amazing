@@ -37,6 +37,7 @@ class generate():
         BREAILY = (" ", "⢸", "⠒", "⣿", "■")
         THISWAY = ("↺", "⇵", "⇌", "↺", "☹")
         AMOUNGS = ("ඞ", "ඞ", "ඞ", "ඞ", "⚠")
+        AWESOME = ("A", "B", "C", "D", "E")
 
     DIRECTIONS: dict[tuple[int, int], str] = {
         (-1, 0): "N",
@@ -62,6 +63,7 @@ class generate():
         self.solved: list[tuple[int, int]] = solved
         self.path = ""
         self.chosen_algo: Iterator[list[list[int]]] | None = None
+        self.maze_steps: list[list[list[int]]] = []
 
         self.connections = size[0] * size[1] - 1
         if size[0] >= 9 and size[1] >= 9:
@@ -131,8 +133,12 @@ class generate():
                 break
             self.connections -= 1
             self.grid = grid
-        if not self.perfect:
-            self.grid, completed = imperfect(self.grid, False)
+            self.maze_steps.append(self.grid)
+
+        completed = False
+        while not completed and not self.perfect:
+            self.grid, completed = imperfect(self.grid, True)
+            self.maze_steps.append(self.grid)
 
     def generate_maze_play(self, algo: int = 0) -> bool:
         """
@@ -140,19 +146,15 @@ class generate():
             the function runs the selected algoritm for 1 instance then returns
             if the maze was completed or not
         """
-        if self.chosen_algo is None:
-            self.chosen_algo = ALGORITHMS[algo](self.grid, self.hidden_grid)
+        if len(self.maze_steps) == 0:
+            self.generate_maze(algo)
         completed = False
-        if not self.connections and self.perfect:
-            completed = True
-        if self.connections:
-            grid = next(self.chosen_algo, None)
-            if grid is None:
-                return True
+        if len(self.maze_steps) > 0:
+            self.grid = self.maze_steps.pop(0)
+            print(f"{self.grid}\n")
             self.connections -= 1
-            self.grid = grid
-        if not self.connections and not self.perfect:
-            self.grid, completed = imperfect(self.grid, True)
+        else:
+            completed = True
         return completed
 
     def solve(self, start_exit: list[tuple[int, int]],
