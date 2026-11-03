@@ -3,7 +3,10 @@
 # A MAZE ING
 
 ## Description
-The goal of this project is to create a maze generator, the maze generator must parse values from a config file, be capable of providing a solution to the maze given the enrty and exit positions, export the maze in a hexedeciaml format, switch between perfect and imperfect maze generation methods and above all else it must provide a method vizualise the program.
+The goal of this project is to create a maze generator, the maze generator must parse values from a config file, be capable of providing a solution to the maze given the entry and exit positions, export the maze in a hexedeciaml format, switch between perfect and imperfect maze generation methods and above all else it must provide a method vizualise the program. the indivual cells of the maze are presented as a int value between 1-15.
+this value determines which are open/broken (e.g 3 (binary value 0011) means the walls
+are open to the south and west. or a binary value of 1010 means that the esat and west
+walls are closed.)
 
 ## Instructions
 ### Getting Started
@@ -89,6 +92,19 @@ print(f"{maze.draw_maze()}")
         (appart from the cells with the 42)
 ```
 
+- DFG (DFS generator)
+```
+        the dfs generator was chosen because of the simplicity of being
+        able to implement the same logic as the dfs solver. it starts from a
+        given parameter of 'start' where it will traverse through the given grid
+        and will break walls according to if they are valid or not. validity
+        is based on if the cells that are being checked are within bounds,
+        not within the stamp and isn't within the 'seen' list which holds
+        all the cells that already been visited. when there are no options
+        on current cell remove current cell from the stack and back track
+        to the last point where options are available.
+```
+
 - Imperfectinator
 ```
         The 'Imperfectinator' is a simple custom algortithm that
@@ -99,6 +115,7 @@ print(f"{maze.draw_maze()}")
         up and down for walls to remove. onve it has completed its checks
         it moves onto the next cell
 ```
+
 ### Maze Solving
 
 - BFS
@@ -111,9 +128,18 @@ print(f"{maze.draw_maze()}")
 ```
 - DFS
 ```
-        DFS is conceptually very similar to BFS, rather than jumping
-        back to the next node in the list it traverses backwards
-        towards the next available node
+        DFS was chosen due to the close relationship it has to BFS.
+        from 'start' cell we check which options are valid and add
+        them to the 'stack'. validity is based on the bitvalue of the
+        current cell and if the cell we are checking has not been
+        visited yet. we traverse through a check if NESW are valid and if
+        any of the cells are valid they get added to stack. then we 
+        traverse through the stack in a LIFO way so that the last added 
+        options will be the first to be checked. whenever there are
+        no options around the current cell we backtrack to the last cell
+        with options available. this will happen until we find the exit
+        or when there is no path available. when no available path return
+        empty list.
 ```
 
 # Workflow distribution & credits
