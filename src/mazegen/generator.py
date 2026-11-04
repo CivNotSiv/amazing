@@ -138,7 +138,8 @@ class generate():
 
         completed = False
         while not completed and not self.perfect:
-            self.grid, completed = imperfect(self.grid, True)
+            grid, completed = imperfect(self.grid, True)
+            self.grid = grid
             self.maze_steps.append([row[:] for row in grid])
 
     def generate_maze_play(self, algo: int = 0) -> bool:
