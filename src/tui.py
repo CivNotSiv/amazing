@@ -229,7 +229,7 @@ class UserInterface(App[None]):
 
     async def animate_gen(self) -> None:
         max_conn = self.width * self.height - 1
-        if self.width >= 9 and self.height >= 9:
+        if self.width >= 14 and self.height >= 14:
             max_conn -= len(self.maze.ignore)
 
         if (not self.maze.connections or self.maze.connections == max_conn):

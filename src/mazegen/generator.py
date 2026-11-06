@@ -67,7 +67,7 @@ class generate():
         self.generated = False
 
         self.connections = size[0] * size[1] - 1
-        if size[0] >= 9 and size[1] >= 9:
+        if size[0] >= 14 and size[1] >= 14:
             self.connections -= len(self.ignore)
 
         if selected is None:
@@ -162,7 +162,7 @@ class generate():
             takes the start and exit tuples as a list and the solving
             algoritm chosen. by default its 0
         """
-        if len(self.solved) > 2:
+        if len(self.solved) != 2:
             self.solved = start_exit
             return
         chosen_solver = SOLVERS[solver]

@@ -154,8 +154,30 @@ give a int value which should be either 0 or 1. the value represents which algor
 ```
 
 # Workflow distribution & credits
+biversen
+- kruskal's algortithm
+- BFS solver
+- generator class
+- tui
+- Makefile
+- imperfectinator
 
+kyguman
+- DFS solver
+- DFS Generator
+- Config Parsing
+- Main
+- Writing of readme
+
+NameOfWheel.com (W wheel)
+- asigning tasks!!!
 
 ## Resources - biversen
+no Ai was used in my portion of the project, W3schools, geeks4geeks,
+The Buckblog was used for maze generation algortithm explanations as
+well as professor-i.github.io/mazes/
 
 ## Resources - kyguman
+AI was used for my part of the project but has only been used for
+understanding and explanation for concepts, W3schools, geeksforgeeks,
+YouTube, pydantic docs and Python documentation.
