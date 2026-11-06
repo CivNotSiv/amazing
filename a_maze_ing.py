@@ -4,7 +4,7 @@ from src import generate
 # from mazegen import generate
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    if len(sys.argv) != 2:
         exit("Excepted input: python3 ./a_maze_ing.py <config.txt>")
     try:
         config = parse_config(sys.argv[1])

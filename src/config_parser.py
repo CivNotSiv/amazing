@@ -54,7 +54,7 @@ class MazeConfig(BaseModel):
         are on the same cell which should not be possible.
         """
         for name, (y, x) in (("ENTRY", self.entry), ("EXIT", self.exit_pos)):
-            if not (0 <= x < self.width and 0 <= y < self.height):
+            if (0 < x > self.width or 0 < y > self.height):
                 raise ValueError(f"{name} {x},{y} is outside the "
                                  f"{self.width}x{self.height} maze")
             if self.entry == self.exit_pos:
