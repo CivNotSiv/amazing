@@ -54,12 +54,11 @@ class MazeConfig(BaseModel):
         are on the same cell which should not be possible.
         """
         for name, (y, x) in (("ENTRY", self.entry), ("EXIT", self.exit_pos)):
-            if (0 < x > self.width - 1 or 0 < y > self.height - 1):
+            if not (0 <= x < self.width and 0 <= y < self.height):
                 raise ValueError(f"{name} {x},{y} is outside the "
                                  f"{self.width}x{self.height} maze")
             if self.entry == self.exit_pos:
                 raise ValueError("ENTRY and EXIT must be different cells")
-                return self
         return self
 
 
