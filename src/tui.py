@@ -169,7 +169,10 @@ class UserInterface(App[None]):
             if start_exit is None:
                 return
             self.start_exit = start_exit
-            self.maze.solve(self.start_exit, self.solver)
+            if len(self.maze.solved) > 2:
+                self.maze.solved = start_exit
+            else:
+                self.maze.solve(self.solver)
             self.update_maze()
 
         elif event.button.id == "theme":
@@ -193,7 +196,7 @@ class UserInterface(App[None]):
                 self.notify("Enter a file name first", severity="error")
                 return
             try:
-                self.maze.export_maze(filename, self.start_exit)
+                self.maze.export_maze(filename)
             except OSError as e:
                 self.notify(f"Could not write {filename}: {e.strerror}",
                             severity="error")

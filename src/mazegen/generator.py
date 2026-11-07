@@ -37,7 +37,7 @@ class generate():
         BREAILY = (" ", "⢸", "⠒", "⣿", "■")
         THISWAY = ("↺", "⇵", "⇌", "↺", "☹")
         AMOUNGS = ("ඞ", "ඞ", "ඞ", "ඞ", "⚠")
-        AWESOME = ("A", "B", "C", "D", "E")
+        RUSH_00 = ("A", "C", "B", "D", "E")
 
     DIRECTIONS: dict[tuple[int, int], str] = {
         (-1, 0): "N",
@@ -156,17 +156,13 @@ class generate():
             return False
         return True
 
-    def solve(self, start_exit: list[tuple[int, int]],
-              solver: int = 0) -> None:
+    def solve(self, solver: int = 0) -> None:
         """
             takes the start and exit tuples as a list and the solving
             algoritm chosen. by default its 0
         """
-        if len(self.solved) != 2:
-            self.solved = start_exit
-            return
         chosen_solver = SOLVERS[solver]
-        self.solved = chosen_solver(self.grid, start_exit)
+        self.solved = chosen_solver(self.grid, self.solved)
         steps: list[str] = ["\n"]
         for (y1, x1), (y2, x2) in zip(self.solved, self.solved[1:]):
             direction = (y2 - y1, x2 - x1)
@@ -220,14 +216,13 @@ class generate():
         line.append("\n")
         return "".join(line)
 
-    def export_maze(self, filename: str,
-                    start_exit: list[tuple[int, int]]) -> None:
+    def export_maze(self, filename: str) -> None:
         out_str = "\n".join(
             "".join(f"{cell:x}" for cell in row) for row in self.grid
         )
         with open(filename, "w") as fd:
             fd.write(out_str)
             fd.write("\n\n")
-            fd.write(f"{start_exit[0][1]},{start_exit[0][0]}\n")
-            fd.write(f"{start_exit[1][1]},{start_exit[1][0]}")
+            fd.write(f"{self.solved[0][1]},{self.solved[0][0]}\n")
+            fd.write(f"{self.solved[-1][1]},{self.solved[-1][0]}")
             fd.write(self.path)

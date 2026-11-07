@@ -29,6 +29,9 @@ config.txt is used to set the default values for a variety of settings including
 
 these settings can all be changed while the program is running, no need to exit and change the config
 
+### Output File
+once the maze has been generated and solved it can have its state saved, once export has been called a file will be generated. The maze is stored line by line as hexedecimal values, the entry and exit are stored below it as csv and below that is the path from the 
+
 ### Options
 #### Algorithms
 For maze generation you can choose between kruskal's algorithm and a modified DFS named DFG (Depth First Generate). 
@@ -72,13 +75,9 @@ maze = generate((9,9), 42, True, None, ((0,0),(8,8)))
 maze.generate_maze(0)
 maze.solve(0)
 print(f"{maze.draw_maze()}")
-
-maze.solve(((0,0),(8,8)))
-print(f"{maze.draw_maze()}")
-
+```
 usage of generate();
 the parameters given should be in order of; a tuple of 2 ints holding the height and width of the maze, a int value of the seed, a boolean that represents if the maze is perfect, None which represents the style, and a tuple of 2 tuples holding 2 int values which hold the coordinates to the start and exit.
-
 
 usage of .generate_maze();
 give a int value which should be either 0 or 1. the value represent which algorithm to use for the generation of the maze. the default value is 0 which represents kruskals,
@@ -86,7 +85,7 @@ give a int value which should be either 0 or 1. the value represent which algori
 
 usage of .solve();
 give a int value which should be either 0 or 1. the value represents which algorithm to use for solving the maze. the default value is 0 which represents BFS, 1 represents DFS.
-```
+
 
 ## Algorithms
 
@@ -173,9 +172,11 @@ NameOfWheel.com (W wheel)
 - asigning tasks!!!
 
 ## Resources - biversen
-no Ai was used in my portion of the project, W3schools, geeks4geeks,
+No Ai was used in my portion of the project, W3schools, geeks4geeks,
 The Buckblog was used for maze generation algortithm explanations as
 well as professor-i.github.io/mazes/
+
+ember was used to generate the awesome wall style
 
 ## Resources - kyguman
 AI was used for my part of the project but has only been used for
