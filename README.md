@@ -18,7 +18,7 @@ walls are closed.)
 
 ### Config File
 In the root of the repo `config.txt` exists
-config.txt is used to set the default values for a variety of settings including:
+config.txt is used to set the default values for a variety of settings, it must be layedout as such and must contain the following fields:
 - `WIDTH=INT`
 - `HEIGHT=INT`
 - `ENTRY=X,Y`
@@ -27,7 +27,7 @@ config.txt is used to set the default values for a variety of settings including
 - `PERFECT=STRING`
 - `SEED=INT`
 
-these settings can all be changed while the program is running, no need to exit and change the config
+these settings can all be changed while the program is running, no need to exit and change the config, however edits made to the generation are non-persistant
 
 ### Output File
 once the maze has been generated and solved it can have its state saved, once export has been called a file will be generated. The maze is stored line by line as hexedecimal values, the entry and exit are stored below it as csv and below that is the path from the 
@@ -62,7 +62,8 @@ There are 7 styles available, they can be easily customised in the Styles enum i
 <img src="https://raw.githubusercontent.com/CivNotSiv/md_resources/refs/heads/main/amazing/bally.png" width="200" height="200" />
 </p>
 
-## Running Headless
+## Reusable Code
+The maze generator can be completely seperated from the tui code. 
 In order to run the maze generator as a standalone package, you can either use the provided .whl or the `make build` command which will rebuild the .whl for later installation.
 
 once you have your package you can run `pip install mazegen-*.whl` to install the package, then you can import the generate class witch contains all the relivant funcitons for maze generation and solving.
@@ -87,7 +88,7 @@ usage of .solve();
 give a int value which should be either 0 or 1. the value represents which algorithm to use for solving the maze. the default value is 0 which represents BFS, 1 represents DFS.
 
 
-## Algorithms
+## Chosen Algorithms
 
 ### Maze Generation
 
@@ -166,7 +167,6 @@ kyguman
 - DFS Generator
 - Config Parsing
 - Main
-- Writing of readme
 
 NameOfWheel.com (W wheel)
 - asigning tasks!!!
@@ -174,11 +174,13 @@ NameOfWheel.com (W wheel)
 ## Resources - biversen
 No Ai was used in my portion of the project, W3schools, geeks4geeks,
 The Buckblog was used for maze generation algortithm explanations as
-well as professor-i.github.io/mazes/
+well as professor-i.github.io/mazes/. ember was used to generate the awesome wall style.
 
-ember was used to generate the awesome wall style
+the project overall went about as well as i had hoped, the work was pretty even distrobuted and it was all completed in a reasonable about of time. one improvement I wouldve made is used more thoughro testing with github actions as i couldve automated a large portion of the testcases
 
 ## Resources - kyguman
 AI was used for my part of the project but has only been used for
 understanding and explanation for concepts, W3schools, geeksforgeeks,
 YouTube, pydantic docs and Python documentation.
+
+the project went pretty well, it went kinda like anticipated. Although I expected myself to be a bit faster and a bit more passionate about my work (write another algo for solving..). I think our teamwork and communicatation has been the best part about our project and I'd say we also worked a pretty fast pace! Did not use any tools besides the internet though!
