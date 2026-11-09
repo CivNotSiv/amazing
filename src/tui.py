@@ -76,7 +76,7 @@ class UserInterface(App[None]):
 
     def compose(self) -> ComposeResult:
         """
-        compose is the funciton that actully draws the elements on 
+        compose is the funciton that actully draws the elements on
         the screen
         """
         with Container(id="maze-container"):
@@ -199,7 +199,7 @@ class UserInterface(App[None]):
             filename = self.query_one("#output", Input).value.strip()
             if not filename:
                 self.notify("Enter a file name first", severity="error")
-                return 
+                return
             e = self.maze.export_maze(filename)
             if e:
                 self.notify(f"Could not write {filename}: {e}",
