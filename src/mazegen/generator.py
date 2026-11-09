@@ -117,14 +117,17 @@ class generate():
                 identiy += 1
 
     def next_style(self) -> None:
+        """
+        grabs the next style from the style enum class
+        """
         members = list(self.Style)
         current = members.index(self.selected)
         self.selected = members[(current + 1) % len(members)]
 
     def generate_maze(self, algo: int = 0) -> None:
         """
-            the solving algorithm is chosen by passing an int. by default its 0
-            the function runs the selected algoritm until completion
+        the solving algorithm is chosen by passing an int. by default its 0
+        the function runs the selected algoritm until completion
         """
         if self.chosen_algo is None:
             self.chosen_algo = ALGORITHMS[algo](self.grid, self.hidden_grid)
@@ -144,9 +147,9 @@ class generate():
 
     def generate_maze_play(self, algo: int = 0) -> bool:
         """
-            the solving algorithm is chosen by passing an int. by default its 0
-            the function runs the selected algoritm for 1 instance then returns
-            if the maze was completed or not
+        the solving algorithm is chosen by passing an int. by default its 0
+        the function runs the selected algoritm for 1 instance then returns
+        if the maze was completed or not
         """
         if not self.generated:
             self.generate_maze(algo)
@@ -158,10 +161,13 @@ class generate():
 
     def solve(self, solver: int = 0) -> None:
         """
-            takes the start and exit tuples as a list and the solving
-            algoritm chosen. by default its 0
+        takes the start and exit tuples as a list and the solving
+        algoritm chosen. by default its 0
         """
         chosen_solver = SOLVERS[solver]
+        if len(self.solved) > 2:
+            self.solved = [self.solved[0], self.solved[-1]]
+            return
         self.solved = chosen_solver(self.grid, self.solved)
         steps: list[str] = ["\n"]
         for (y1, x1), (y2, x2) in zip(self.solved, self.solved[1:]):
@@ -216,13 +222,22 @@ class generate():
         line.append("\n")
         return "".join(line)
 
-    def export_maze(self, filename: str) -> None:
+    def export_maze(self, filename: str) -> str | None:
+        """
+        exports the maze as a txt file, takes a str as the file
+        name and returns a str in the event of an error else None
+        """
         out_str = "\n".join(
             "".join(f"{cell:x}" for cell in row) for row in self.grid
         )
-        with open(filename, "w") as fd:
-            fd.write(out_str)
-            fd.write("\n\n")
-            fd.write(f"{self.solved[0][1]},{self.solved[0][0]}\n")
-            fd.write(f"{self.solved[-1][1]},{self.solved[-1][0]}")
-            fd.write(self.path)
+        try:
+            with open(filename, "w") as fd:
+                fd.write(out_str)
+                fd.write("\n\n")
+                fd.write(f"{self.solved[0][1]},{self.solved[0][0]}\n")
+                fd.write(f"{self.solved[-1][1]},{self.solved[-1][0]}")
+                fd.write(self.path)
+        except OSError as e:
+            print(f"Export error: {e}")
+            return (f"{e.strerror}")
+        return None

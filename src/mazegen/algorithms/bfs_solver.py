@@ -2,8 +2,8 @@
 def available_dir(grid: list[list[int]],
                   current: tuple[int, int]) -> list[tuple[int, int]]:
     """
-        Finds the available cells from around the current cell and
-        adds them into a tuple
+    Finds the available cells from around the current cell and
+    adds them into a tuple
     """
     y, x = current
     walls = grid[y][x]
@@ -26,10 +26,10 @@ def available_dir(grid: list[list[int]],
 def bfs(grid: list[list[int]],
         start_exit: list[tuple[int, int]]) -> list[tuple[int, int]]:
     """
-        returns a tuple of all valid cells it went through while
-        navigating
-        loops over queue until either the exit is reached or queue
-        is depleated
+    returns a tuple of all valid cells it went through while
+    navigating
+    loops over queue until either the exit is reached or queue
+    is depleated
     """
     start = start_exit[0]
     queue: list[tuple[tuple[int, int], list[tuple[int, int]]]] = [

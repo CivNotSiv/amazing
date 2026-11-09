@@ -29,25 +29,11 @@ class tree_set():
 def kruskal_algo(grid: list[list[int]],
                  h_grid: list[list[tree_set]]) -> Iterator[list[list[int]]]:
     """
-    explanation.
-    1rd,    we check the elements surrounding the randomly selected cell
-            and if the element is a valid target wwe add it to the options
-            list, then we randomly selsect from the options, if there
-            are no options we start again.
-
-    2rd,    we update the hidden grid to reflect the desired change
-            this is done by updating the parent, if the target cell isnt
-            the parent of its tree we navigate to the top of the target
-            tree and make it point to the current cell, thus inheriting
-            the tree into its own tree
-
-    3st,    then we update the grid to show the changes in the hidden grid
-            we update the target and the origin cells at the same time with
-            the fucked up if else block, it should be fine because only x or y
-            will be pos or neg at a time so it shouldnt cause trubel
-
-    4rd,    anyway that continues until the desird connections are reached
-            then it just returns the grid
+    takse a grid and a hiddengrid as parameters, it randomly selects
+    cells and remove a random valid wall between them, the hiddengrid
+    is used to store the cells parents so loops are not generated, the
+    hidden grid also contains cells with id=0, these cells are the stamp
+    and thus shouldnt be editied so theyre invalid targets
     """
     while True:
         while True:

@@ -75,6 +75,10 @@ class UserInterface(App[None]):
         return True
 
     def compose(self) -> ComposeResult:
+        """
+        compose is the funciton that actully draws the elements on 
+        the screen
+        """
         with Container(id="maze-container"):
             yield Static(self.maze.draw_maze(), id="maze", markup=False)
 
@@ -135,6 +139,10 @@ class UserInterface(App[None]):
                 yield Button(str(self.maze.selected.name), id="style")
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
+        """
+        this function is what handles user inputs, the even.button.id
+        is what selects the specific function
+        """
         if event.button.id == "generate":
             self.update_settings()
             self.maze = generate(
@@ -176,9 +184,6 @@ class UserInterface(App[None]):
             self.update_maze()
 
         elif event.button.id == "theme":
-            """
-            Switch to the next theme in themes
-            """
             themes = [t for t in THEMES if t in self.available_themes]
             try:
                 index = themes.index(self.theme)
@@ -194,11 +199,10 @@ class UserInterface(App[None]):
             filename = self.query_one("#output", Input).value.strip()
             if not filename:
                 self.notify("Enter a file name first", severity="error")
-                return
-            try:
-                self.maze.export_maze(filename)
-            except OSError as e:
-                self.notify(f"Could not write {filename}: {e.strerror}",
+                return 
+            e = self.maze.export_maze(filename)
+            if e:
+                self.notify(f"Could not write {filename}: {e}",
                             severity="error")
                 return
             self.output_file = filename
@@ -227,10 +231,18 @@ class UserInterface(App[None]):
             self.update_maze()
 
     def next_option(self, options: list[str], current: str) -> str:
-        """Return the option after `current`, wrapping around at the end."""
+        """
+        Return the option after current, wrapping around at the end.
+        """
         return options[(options.index(current) + 1) % len(options)]
 
     async def animate_gen(self) -> None:
+        """
+        this funciton polls the maze.generate_play funciton,
+        it does so accouring to the asyncio.sleep(s) function
+        it also regenerates the maze if the maze is completed
+        and animate_gen is called
+        """
         max_conn = self.width * self.height - 1
         if self.width >= 14 and self.height >= 14:
             max_conn -= len(self.maze.ignore)
@@ -251,8 +263,8 @@ class UserInterface(App[None]):
 
     def read_maze_settings(self) -> tuple[int, int, int] | None:
         """
-            check weither the input fields are numbers
-            Return (width, height, seed) from the inputs, or None if invalid.
+        check weither the input fields are numbers
+        Return (width, height, seed) from the inputs, or None if invalid.
         """
         try:
             width = int(self.query_one("#width", Input).value)
@@ -272,9 +284,9 @@ class UserInterface(App[None]):
 
     def read_start_exit(self) -> list[tuple[int, int]] | None:
         """
-            check weither the input fields are numbers and clamps
-            to maze size if too large Return ((start_y, start_x),
-            (exit_y, exit_x)) from the inputs, or None if invalid.
+        check weither the input fields are numbers and clamps
+        to maze size if too large Return ((start_y, start_x),
+        (exit_y, exit_x)) from the inputs, or None if invalid.
         """
         try:
             start = (
@@ -304,7 +316,7 @@ class UserInterface(App[None]):
 
     class ScrollInput(Input):
         """
-            uses events to detect the scrolling of the mouse wheel
+        uses events to detect the scrolling of the mouse wheel
         """
         def __init__(self, *args: Any, step: int = 1, **kwargs: Any) -> None:
             super().__init__(*args, **kwargs)

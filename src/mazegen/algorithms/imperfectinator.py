@@ -3,6 +3,11 @@ import random
 
 def valid_cells(grid: list[list[int]],
                 y: int, x: int) -> list[tuple[int, int]]:
+    """
+        takes a grid and an x and y that fits with the 
+        grid. it retruns a list of valid surrounding cells
+        that can have a wall removed between them
+    """
     cells = []
     if x < len(grid[y]) - 1:
         if grid[y][x + 1] != 15 and grid[y][x] & 2:
@@ -23,6 +28,12 @@ def valid_cells(grid: list[list[int]],
 
 def imperfect(grid: list[list[int]],
               play: bool) -> tuple[list[list[int]], bool]:
+    """
+    this function takes a completed maze and a play bool
+    if the bool is false it will return a fully
+    imperfected maze, should the play be true it will 
+    return a single itteration of the maze imperfectination
+    """
     for y in range(len(grid)):
         for x in range(len(grid[y])):
             if grid[y][x] == 15:
